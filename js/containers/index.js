@@ -2,20 +2,11 @@ import React, {Component} from 'react';
 import {StyleSheet, Platform} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import SideMenu from '../components/SideMenu/SideMenu';
 
-
-class Mgimo extends Component {
+export default class Rss extends Component {
     render() {
-        return <View/>;
+        return <SideMenu/>;
     }
 }
 
-export default connect((state) => {
-        return state
-    },
-    (dispatch) => ({
-        settingsActions: bindActionCreators(settingsActions, dispatch),
-        tabBarActions: bindActionCreators(tabBarActions, dispatch),
-        sdkActions: bindActionCreators(sdkActions, dispatch),
-    })
-)(Mgimo);
