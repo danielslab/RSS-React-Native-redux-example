@@ -17,7 +17,7 @@ export default class RSSReactNative extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>
-          Welcome to React Native!
+          Test asd
         </Text>
         <Text style={styles.instructions}>
           To get started, edit index.ios.js
