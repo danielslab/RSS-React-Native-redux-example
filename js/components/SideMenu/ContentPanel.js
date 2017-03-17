@@ -11,11 +11,12 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import {MAIN_COLOR} from '../../constants';
+import {MAIN_COLOR, icons} from '../../constants';
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: 'white',
     },
     headerContainer: {
         flex: 0.15,
@@ -83,36 +84,24 @@ export default class ContentPanel extends Component {
 
     _getIconName = name => {
         if (name === 'All') {
-            if (Platform.OS === 'ios') {
-                return 'ios-paper-plane';
-            } else {
-                return 'md-paper-plane';
-            }
+            return icons.paperPlane;
         }
 
         if (name === 'Tags') {
-            if (Platform.OS === 'ios') {
-                return 'ios-pricetags';
-            } else {
-                return 'md-pricetags';
-            }
+            return icons.priceTags;
         }
 
         if (name === 'Manage Channels') {
-            if (Platform.OS === 'ios') {
-                return 'ios-settings';
-            } else {
-                return 'md-settings';
-            }
+            return icons.settings;
         }
-    }
+    };
 
     _renderItem = (name, isSelected, onPress) => {
         let iconName = this._getIconName(name);
         let backgrondColor = this._getItemBackgroundColor(isSelected);
         let contentColor = this._getItemContentColor(isSelected);
         if (name === 'All') {
-            name = 'All ' + this.props.unreadCount + '/' + this.props.totalCount;
+            name = 'All (' +  this.props.unreadCount + '/' + this.props.totalCount + ')';
         }
         return (
             <View style={[styles.itemContainer,

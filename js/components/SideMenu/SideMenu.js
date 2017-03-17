@@ -27,21 +27,15 @@ const drawerStyles = {
 class SideMenu extends Component {
     constructor(props) {
         super(props);
-        if (Platform.OS === 'ios') {
-            this.type = "static";
-        } else {
-            this.type = "overlay";
-        }
     }
 
 
     render() {
         const {sideMenuActions, sideMenuState} = this.props;
-
         return (
             <Drawer
                 ref={(ref) => this._drawer = ref}
-                type={this.type}
+                type="overlay"
                 content={<ContentPanel
                             {...sideMenuActions}
                             {...sideMenuState}
