@@ -7,27 +7,42 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {
     StyleSheet,
-    Platform,
     View,
     Text,
     TouchableOpacity,
     Navigator
 } from 'react-native';
-import mainColor from '../constants';
+import {MAIN_COLOR, icons} from '../constants';
+import * as allActions from '../actions/allActions';
+import All from './All';
+import ManageChannels from './ManageChannels';
+import Tags from './Tags';
 
 const styles = StyleSheet.create({
     titleText: {
+        marginTop: 16,
         fontSize: 16,
         color: 'white',
+    },
+    navBar: {
+        backgroundColor: MAIN_COLOR,
+        justifyContent: 'center',
+    },
+    leftIcon: {
+        marginTop: 16,
+        marginLeft: 16,
+    },
+    rightIcon: {
+        marginTop: 16,
+        marginRight: 16,
+    },
+    content: {
+        flex: 1,
+        marginTop: 56,
     }
 });
 
-const routes = [
-    {title: 'First Scene', index: 0},
-    {title: 'Second Scene', index: 1},
-];
-
-export default class Main extends Component {
+class Main extends Component {
 
     static propTypes = {
         isAllSelected: PropTypes.bool,
@@ -39,49 +54,27 @@ export default class Main extends Component {
 
     _renderLeftButton = (route, navigator, index, navState) => {
         const { openDrawer } = this.props;
-        console.log('Route', route);
-        if (route === 0 || route === 1 || route === 2) {
-            if (Platform.OS === 'ios') {
-                return (
-                    <TouchableOpacity onPress={() => openDrawer()}>
-                        <Icon name="ios-menu" size={30} color="white" />
-                    </TouchableOpacity>
-                );
-            } else {
-                return (
-                    <TouchableOpacity onPress={() => openDrawer()}>
-                        <Icon name="md-menu" size={30} color="white" />
-                    </TouchableOpacity>
-                );
-            }
-        }
+        return (
+            <TouchableOpacity style={styles.leftIcon} onPress={() => openDrawer()}>
+                <Icon name={icons.menu} size={24} color="white"/>
+            </TouchableOpacity>
+        );
     };
 
     _renderRightButton = (route, navigator, index, navState) => {
-        const {refreshFeeds} = this.props;
-        if (route === 0) {
-            if (Platform.OS === 'ios') {
-                return (
-                    <TouchableOpacity onPress={() => refreshFeeds()}>
-                        <Icon name="ios-refresh" size={30} color="white"/>
-                    </TouchableOpacity>
-                );
-            } else {
-                return (
-                    <TouchableOpacity onPress={() => refreshFeeds()}>
-                        <Icon name="md-refresh" size={30} color="white"/>
-                    </TouchableOpacity>
-                );
-            }
+        if (this.props.isAllSelected) {
+            return (
+                <TouchableOpacity style={styles.rightIcon} onPress={() => this.props.allActions.refreshFeeds()}>
+                    <Icon name={icons.refresh} size={24} color="white"/>
+                </TouchableOpacity>
+            );
         } else {
             return <View/>;
         }
     };
 
-
     _renderTitle = (route, navigator, index, navState) => {
         const {isAllSelected, isTagsSelected, isManageChannelsSelected} = this.props;
-        console.log('here we are', isAllSelected);
         let title = '';
         if (isAllSelected) {
             title = 'All';
@@ -95,22 +88,43 @@ export default class Main extends Component {
         return <Text style={styles.titleText}>{title}</Text>;
     };
 
+    _renderContent = () => {
+        const {isAllSelected, isManageChannelsSelected, isTagsSelected} = this.props;
+        const {allActions, allState} = this.props;
+        if (isAllSelected) {
+            return <All allActions={allActions} allState={allState}/>;
+        }
+        if (isManageChannelsSelected) {
+            return <ManageChannels/>
+        }
+        if (isTagsSelected) {
+            return <Tags/>;
+        }
+    };
 
     render() {
         return (
             <Navigator
-                initialRoute={routes[0]}
-                initialRouteStack={routes}
-                renderScene={(route, navigator) => { }}
+                renderScene={(route, navigator) => (<View style={styles.content}>{this._renderContent()}</View>) }
                 navigationBar={
                     <Navigator.NavigationBar
                         routeMapper={{
                              LeftButton: this._renderLeftButton,
                              RightButton: this._renderRightButton,
                              Title: this._renderTitle,}}
-                        style={{height: 56, backgroundColor: mainColor}}
+                        style={styles.navBar}
                     />
                  }
             />);
+
     }
 }
+
+export default connect(
+    state => ({
+        allState: state.allState
+    }),
+    dispatch => ({
+        allActions: bindActionCreators({...allActions}, dispatch)
+    })
+)(Main);
