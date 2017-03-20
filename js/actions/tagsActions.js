@@ -3,29 +3,68 @@
  */
 
 import {
-    SAVE_TAGS,
-    SAVE_TAGS_FOR_FEED,
-    GET_TAGS
+    COMMIT_TAGS,
+    COMMIT_CHANNEL_TAGS_MASK,
+    GET_CHANNEL_TAGS_MASK,
+    DELETE_TAG,
+    ADD_TAG,
+    SELECT_TAG,
+    GET_TAGS,
+    ON_PRESS_TAG
 } from '../constants';
 
-export function saveTags(tags) {
+export function commitTags() {
     return {
-        type: SAVE_TAGS,
-        tags,
+        type: COMMIT_TAGS,
     }
 }
 
-export function saveTagsForFeed(tags, feedId) {
+export function commitChannelTagsMask() {
     return {
-        type: SAVE_TAGS_FOR_FEED,
-        tags,
-        feedId
+        type: COMMIT_CHANNEL_TAGS_MASK,
+        tagsMask,
+        channelId
     }
 }
 
 export function getTags() {
-    console.log("GET_TAGS");
     return {
         type: GET_TAGS,
+    }
+}
+
+export function getChannelTagsMask(channelId) {
+    return {
+        type: GET_CHANNEL_TAGS_MASK,
+        channelId,
+    }
+}
+
+export function deleteTag(tag) {
+    return {
+        type: DELETE_TAG,
+        tag
+    }
+}
+
+export function addTag(tag) {
+    return {
+        type: ADD_TAG,
+        tag
+    }
+}
+
+export function selectTag(tag, isChecked) {
+    return {
+        type: SELECT_TAG,
+        tag,
+        isChecked,
+    }
+}
+
+export function onPressTag(tag) {
+    return {
+        type: ON_PRESS_TAG,
+        tag
     }
 }

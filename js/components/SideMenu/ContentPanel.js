@@ -106,7 +106,7 @@ export default class ContentPanel extends Component {
         return (
             <View style={[styles.itemContainer,
                                 {backgroundColor: backgrondColor}]}>
-                <TouchableOpacity style={styles.itemContainer} onPress={() => {onPress(); this.props.closeDrawer();}}>
+                <TouchableOpacity style={styles.itemContainer} onPress={() => {this.props.closeDrawer(); setTimeout(onPress, 400); }}>
                     <View style={styles.iconContainer}>
                         <Icon name={iconName} size={24} color={contentColor} />
                     </View>

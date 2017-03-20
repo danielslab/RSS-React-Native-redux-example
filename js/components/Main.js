@@ -3,6 +3,8 @@
  */
 import React, {Component, PropTypes} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {
@@ -10,7 +12,8 @@ import {
     View,
     Text,
     TouchableOpacity,
-    Navigator
+    Navigator,
+    Alert
 } from 'react-native';
 import {MAIN_COLOR, icons} from '../constants';
 
@@ -65,15 +68,41 @@ class Main extends Component {
     };
 
     _renderRightButton = (route, navigator, index, navState) => {
+        console.log(this.props.tagsState);
         if (this.props.isAllSelected) {
             return (
                 <TouchableOpacity style={styles.rightIcon} onPress={() => this.props.allActions.refreshFeeds()}>
                     <Icon name={icons.refresh} size={24} color="white"/>
                 </TouchableOpacity>
             );
+        } else if (!this.props.tagsState.tagsCommitted){
+            return (
+                <TouchableOpacity style={styles.leftIcon}
+                                  onPress={() => this._confirmCommit(this.props.tagsActions.commitTags)}>
+                    <MaterialIcon name={"save"} size={24} color="white"/>
+                </TouchableOpacity>
+            );
+        } else if (!this.props.tagsState.maskCommitted) {
+            return (
+                <TouchableOpacity style={styles.leftIcon}
+                                  onPress={() => this._confirmCommit(this.props.tagsActions.commitChannelTagsMask)}>
+                    <MaterialIcon name={"save"} size={24} color="white"/>
+                </TouchableOpacity>
+            );
         } else {
             return <View/>;
         }
+    };
+
+    _confirmCommit = (commit) => {
+        Alert.alert(
+            'Save changes',
+            'Are you sure you want to save changes?',
+            [
+                {text: 'Cancel', onPress: () => this.props.tagsActions.getTags()},
+                {text: 'OK', onPress: () => commit()}
+            ]
+        );
     };
 
     _renderTitle = (route, navigator, index, navState) => {

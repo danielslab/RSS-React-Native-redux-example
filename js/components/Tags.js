@@ -2,15 +2,24 @@
  * Created by denissamohvalov on 17.03.17.
  */
 import React, {Component, PropTypes} from 'react';
+import Prompt from 'react-native-prompt';
 import {
     StyleSheet,
     View,
     ScrollView,
-    Text
+    Text,
+    Button,
+    TextInput,
+    TouchableOpacity
 } from 'react-native';
 import Tag from './Tag';
+import ActionButton from 'react-native-action-button';
+import {MAIN_COLOR} from '../constants';
 
 const styles = StyleSheet.create({
+    outerContainer: {
+        flex: 1,
+    },
     container: {
         flex: 1,
         flexDirection: 'row',
@@ -19,96 +28,80 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         paddingLeft: 3,
         paddingRight: 3,
+    },
+    scrollContainer: {
+        justifyContent: 'space-between',
+    },
+    modalContainer: {
+        borderRadius: 5,
+        flexGrow: 1,
+        height: 65,
+        alignSelf: 'stretch',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        overflow: 'hidden',
     }
 });
 export default class Tags extends Component {
     static propTypes = {
         tags: PropTypes.array,
         getTags: PropTypes.func,
-        showCheckboxes: PropTypes.bool,
-        tagsSelectedMask: PropTypes.array,
-        feedId: PropTypes.string,
+        deleteTag: PropTypes.func,
         addTag: PropTypes.func,
-        saveTags: PropTypes.func,
+        onPressTag: PropTypes.func,
+        selectTag: PropTypes.func,
+        commitTags: PropTypes.func,
     };
 
     constructor(props) {
         super(props);
         this.state = {
-            tags: [],
-        };
+            promptVisible: false,
+        }
     }
 
     componentDidMount() {
         this.props.getTags();
-        this._initState(this.props);
     }
-
-    componentWillReceiveProps(nextProps) {
-        this._initState(nextProps);
-    }
-
-    _initState = (props) => {
-        const {tags, tagsSelectedMask} = props;
-        let stateTags = [];
-        for (let i = 0; i < tags.length; ++i) {
-            let tag = {
-                name: tags[i],
-                id: i,
-                isChecked: tagsSelectedMask && tagsSelectedMask[i],
-            };
-            stateTags.push(tag);
-        }
-        this.setState({
-            tags: stateTags,
-        })
-    };
-
-    _deleteTag = (tagId) => {
-        let newTags = this.state.tags.slice();
-        for (let i = 0; i < newTags.length; ++i) {
-            if (newTags[i].id == tagId) {
-                newTags.splice(i, 1);
-                break;
-            }
-        }
-        this.setState({
-            tags: newTags
-        });
-    };
-
-    _selectTag = (tagId, checked) => {
-        let newTags = this.state.tags.slice();
-        for (let i = 0; i < newTags.length; ++i) {
-            if (newTags[i].id == tagId) {
-                newTags[i].isChecked = checked;
-            }
-        }
-        this.setState({
-            tags: newTags
-        });
-    };
-
 
     render() {
+        const {deleteTag, onPressTag, selectTag, tags} = this.props;
         return (
-            <ScrollView style={{flex: 1}}>
-                <View style={styles.container}>
-                    {this.state.tags.map((tag, id) => {
-                        return (
-                         //   {/*<View style={{flex: 1}}>*/}
-                            <Tag
-                                tag={tag}
-                                selectTag={this._selectTag}
-                                deleteTag={this._deleteTag}
-                                showCheckBox={this.props.showCheckboxes}
-                                showDelete={!this.props.showCheckboxes}
-                            />
-                          //  {/*</View>*/}
-                        );
-                    })}
-                </View>
-            </ScrollView>
+            <View style={styles.outerContainer}>
+                <ScrollView style={{flex: 1}}>
+                    <View style={styles.container}>
+                        {tags.map((tag, key) => {
+                            return (
+                                <Tag
+                                    key={key}
+                                    tag={tag}
+                                    selectTag={selectTag}
+                                    deleteTag={deleteTag}
+                                    onPressTag={onPressTag}
+                                    showCheckBox={this.props.showCheckboxes}
+                                    showDelete={!this.props.showCheckboxes}
+                                />
+                            );
+                        })}
+                    </View>
+                </ScrollView>
+                <ActionButton buttonColor={MAIN_COLOR} onPress={() => this.setState({promptVisible: true})}/>
+                <Prompt
+                    title="Type the tag name"
+                    placeholder="Tag name"
+                    visible={this.state.promptVisible}
+                    onCancel={() => this.setState({
+                                  promptVisible: false,
+                                })}
+                    onSubmit={(value) => {
+                        this.props.addTag(value);
+                        this.props.commitTags();
+                        this.setState({
+                                  promptVisible: false,
+                                });
+                        }
+                    }/>
+            </View>
         );
     }
 }

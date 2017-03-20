@@ -9,6 +9,8 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import {MAIN_COLOR} from '../constants';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+
 const styles = StyleSheet.create({
     tag: {
         flexDirection: 'row',
@@ -17,45 +19,31 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 14,
         overflow: 'hidden',
-        backgroundColor: MAIN_COLOR,
-        padding: 2,
-        paddingLeft: 4,
-        paddingRight: 4,
-        margin: 2
+        backgroundColor: '#EEEEEE',
+        padding: 4,
+        paddingLeft: 12,
+        margin: 2,
+        height: 32,
+        elevation: 2,
     },
     tagText: {
-        color: 'white',
-        overflow: 'hidden',
-        fontSize: 14,
-    },
-    removeText: {
-        color: 'white',
-        fontSize: 19,
-    },
-    removeTextContainer: {
-        width: 15,
-        height: 15,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 7.5,
-        backgroundColor: 'black',
+        color: 'black',
         opacity: 0.87,
-        marginLeft: 2,
+        fontFamily: 'sans-serif',
+        fontSize: 13,
+        marginRight: 4,
     },
 
 });
 export default class Tags extends Component {
     static propTypes = {
-        tag: PropTypes.object,
+        tag: PropTypes.string,
         selectTag: PropTypes.func,
         deleteTag: PropTypes.func,
-        onPress: PropTypes.func,
+        onPressTag: PropTypes.func,
+        isChecked: PropTypes.bool,
         showCheckBox: PropTypes.bool,
         showDelete: PropTypes.bool,
-    };
-
-    static defaultProps = {
-        onPress: () => {},
     };
 
     _renderTag = () => {
@@ -64,14 +52,14 @@ export default class Tags extends Component {
             <View style={styles.tag}>
                 {showCheckBox &&
                 <CheckBox
-                    label={tag.name}
-                    checked={tag.isChecked}
-                    onChange={(checked) => selectTag(tag.id, checked)}
+                    label={tag}
+                    checked={isChecked}
+                    onChange={(checked) => selectTag(tag, checked)}
                 />}
-                <Text style={styles.tagText}>{tag.name}</Text>
+                <Text style={styles.tagText}>{tag}</Text>
                 {showDelete &&
-                <TouchableOpacity style={{marginLeft: 2}} onPress={() => deleteTag(tag.id)}>
-                    <Text style={styles.removeText}>×</Text>
+                <TouchableOpacity onPress={() => deleteTag(tag)}>
+                    <Icon size={24} name="cancel"/>
                 </TouchableOpacity>}
             </View>
         );
@@ -83,7 +71,7 @@ export default class Tags extends Component {
         }
         if (this.props.showDelete) {
             return (
-                <TouchableOpacity onPress={this.props.onPress}>
+                <TouchableOpacity onPress={this.props.onPressTag}>
                     {this._renderTag()}
                 </TouchableOpacity>
             );
