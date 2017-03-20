@@ -15,6 +15,7 @@ const getIcons = () => {
             menu: 'ios-menu',
             refresh: 'ios-refresh',
             star: 'ios-star',
+            close: 'ios-close-circle'
         }
     } else {
         return {
@@ -24,6 +25,7 @@ const getIcons = () => {
             menu: 'md-menu',
             refresh: 'md-refresh',
             star: 'md-star'
+            close: 'md-close-circle'
         }
     }
 };

@@ -8,8 +8,8 @@ import {
     Text,
     TouchableOpacity,
 } from 'react-native';
-import {MAIN_COLOR} from '../constants';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import {icons} from '../constants';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const styles = StyleSheet.create({
     tag: {
@@ -59,7 +59,7 @@ export default class Tags extends Component {
                 <Text style={styles.tagText}>{tag}</Text>
                 {showDelete &&
                 <TouchableOpacity onPress={() => deleteTag(tag)}>
-                    <Icon size={24} name="cancel"/>
+                    <Icon size={24} name={icons.close}/>
                 </TouchableOpacity>}
             </View>
         );
