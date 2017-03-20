@@ -3,8 +3,7 @@
  */
 import React, {Component, PropTypes} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
+
 import {
     StyleSheet,
     View,
@@ -12,7 +11,7 @@ import {
     TouchableOpacity,
     Image
 } from 'react-native';
-import {MAIN_COLOR, icons, STAR_COLOR} from '../constants';
+import {icons, STAR_COLOR} from '../constants';
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -72,7 +71,6 @@ export default class FeedCell extends Component {
     };
 
     _getStarColor = () => {
-        console.log(this.props.isBookmarked);
         if (this.props.isBookmarked) {
             return STAR_COLOR;
         } else {
