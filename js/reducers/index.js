@@ -3,7 +3,9 @@
  */
 import sideMenuState from './sideMenuReducers';
 import allState from './allReducers';
+import tagsState from './tagsReducer';
 export {
     sideMenuState,
-    allState
+    allState,
+    tagsState
 };

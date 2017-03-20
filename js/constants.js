@@ -38,3 +38,6 @@ export const ON_FEED_PRESS = 'ON_FEED_PRESS';
 export const ON_TAP_STAR = 'ON_TAP_STAR';
 export const SELECT_FEED_TAB = 'SELECT_FEED_TAB';
 export const REFRESH_FEEDS = 'REFRESH_FEEDS';
+export const SAVE_TAGS = 'SAVE_TAGS';
+export const SAVE_TAGS_FOR_FEED = 'SAVE_TAGS_FOR_FEED';
+export const GET_TAGS = 'GET_TAGS';

@@ -13,7 +13,10 @@ import {
     Navigator
 } from 'react-native';
 import {MAIN_COLOR, icons} from '../constants';
+
 import * as allActions from '../actions/allActions';
+import * as tagsActions from '../actions/tagsActions';
+
 import All from './All';
 import ManageChannels from './ManageChannels';
 import Tags from './Tags';
@@ -91,6 +94,7 @@ class Main extends Component {
     _renderContent = () => {
         const {isAllSelected, isManageChannelsSelected, isTagsSelected} = this.props;
         const {allActions, allState} = this.props;
+        const {tagsActions, tagsState} = this.props;
         if (isAllSelected) {
             return <All allActions={allActions} allState={allState}/>;
         }
@@ -98,7 +102,7 @@ class Main extends Component {
             return <ManageChannels/>
         }
         if (isTagsSelected) {
-            return <Tags/>;
+            return <Tags {...tagsActions} {...tagsState} showCheckboxes={false}/>;
         }
     };
 
@@ -121,10 +125,12 @@ class Main extends Component {
 }
 
 export default connect(
-    state => ({
-        allState: state.allState
-    }),
+    state => { return {
+        allState: state.allState,
+        tagsState: state.tagsState,
+    }},
     dispatch => ({
-        allActions: bindActionCreators({...allActions}, dispatch)
+        allActions: bindActionCreators({...allActions}, dispatch),
+        tagsActions: bindActionCreators({...tagsActions}, dispatch)
     })
 )(Main);
