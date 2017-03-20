@@ -34,10 +34,7 @@ function getTags() {
 }
 
 function addTag(tag, tags) {
-    let out = new Set([tag]);
-    for (let i = 0; i < tags.length; ++i) {
-        out.add(tags[i]);
-    }
+    let out = new Set([...tags, tag]);
     return [...out];
 }
 
