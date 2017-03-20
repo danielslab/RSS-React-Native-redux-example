@@ -9,8 +9,21 @@ import Rss from './index';
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 const reducer = combineReducers(reducers);
 const store = createStoreWithMiddleware(reducer);
+import {realm} from '../db';
 
 export default class App extends Component {
+    fillDB() {
+        realm.write(() => {
+            realm.delete(realm.objects('Tag'));
+            let tags = ["Apple", "Google", "Oracle", "Baidu", "Alibaba", "Yahoo", "McKinsey&Co", "The Boston Consulting Group"];
+            for (tag of tags) {
+                realm.create('Tag', {name: tag});
+            }
+        });
+    }
+    componentDidMount() {
+        // this.fillDB();
+    }
   render() {
     return (
       <Provider store={store}>

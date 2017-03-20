@@ -15,6 +15,7 @@ const getIcons = () => {
             menu: 'ios-menu',
             refresh: 'ios-refresh',
             star: 'ios-star',
+            trash: 'ios-trash',
             close: 'ios-close-circle'
         }
     } else {
@@ -24,7 +25,8 @@ const getIcons = () => {
             settings: 'md-settings',
             menu: 'md-menu',
             refresh: 'md-refresh',
-            star: 'md-star'
+            star: 'md-star',
+            trash: 'md-trash',
             close: 'md-close-circle'
         }
     }
@@ -48,3 +50,6 @@ export const DELETE_TAG = "DELETE_TAG";
 export const ADD_TAG = "ADD_TAG";
 export const SELECT_TAG = "SELECT_TAG";
 export const ON_PRESS_TAG = "ON_PRESS_TAG";
+export const EDIT_CHANNEL = "EDIT_CHANNEL";
+export const DELETE_CHANNEL = "DELETE_CHANNEL";
+export const GET_CHANNELS = "GET_CHANNELS";
