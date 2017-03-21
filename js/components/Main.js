@@ -22,7 +22,6 @@ import {MAIN_COLOR, icons} from '../constants';
 import * as allActions from '../actions/allActions';
 import * as tagsActions from '../actions/tagsActions';
 import * as channelsActions from '../actions/channelsActions';
-import * as tagsMaskManagerActions from '../actions/tagsMaskManagerActions';
 
 import All from './All';
 import ManageChannels from './ManageChannels';
@@ -105,14 +104,8 @@ class Main extends Component {
                     <MaterialIcon name={"save"} size={24} color="white"/>
                 </TouchableOpacity>
             );
-        } else if (!this.props.tagsState.maskCommitted) {
-            return (
-                <TouchableOpacity style={styles.leftIcon}
-                                  onPress={() => this._confirmCommit(this.props.tagsActions.commitChannelTagsMask)}>
-                    <MaterialIcon name={"save"} size={24} color="white"/>
-                </TouchableOpacity>
-            );
-        } else {
+        }
+         else {
             return <View/>;
         }
     };
@@ -163,11 +156,8 @@ class Main extends Component {
                         {...channelsActions}
                         {...channelsState}/>;
         } else if (route && route.title === 'Edit Tags') {
-            tagsMaskManagerActions.getTagsMask(channelsState.id);
             return <TagsMaskManager
-                        channelId={channelsState.id}
-                        {...tagsMaskManagerActions}
-                        {...tagsMaskManagerState}/>
+                        channelId={channelsState.id}/>
         }
         if (isAllSelected) {
             return <All
@@ -212,13 +202,11 @@ export default connect(
             allState: state.allState,
             tagsState: state.tagsState,
             channelsState: state.channelsState,
-            tagsMaskManagerState: state.tagsMaskManagerState,
         }
     },
     dispatch => ({
         allActions: bindActionCreators({...allActions}, dispatch),
         tagsActions: bindActionCreators({...tagsActions}, dispatch),
         channelsActions: bindActionCreators({...channelsActions}, dispatch),
-        tagsMaskManagerActions: bindActionCreators({...tagsMaskManagerActions}, dispatch)
     })
 )(Main);

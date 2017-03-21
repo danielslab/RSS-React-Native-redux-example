@@ -6,18 +6,13 @@ import {
     GET_TAGS,
     ADD_TAG,
     DELETE_TAG,
-    SELECT_TAG,
     COMMIT_TAGS,
-    GET_CHANNEL_TAGS_MASK,
-    COMMIT_CHANNEL_TAGS_MASK,
 } from '../constants';
 
 
 let initialState = {
     tags: [],
-    channelTagsMask: [],
     tagsCommitted: true,
-    maskCommitted: true,
     channelId: null,
 };
 
@@ -78,24 +73,6 @@ export default function tagsState(state = initialState, action) {
             return { // TODO
                 ...state,
                 tagsCommitted: true,
-            };
-        case GET_CHANNEL_TAGS_MASK:
-            return {
-                ...state,
-                maskCommitted: true,
-                channelTagsMask: getChannelTagsMask(action.channelId)
-            };
-        case SELECT_TAG:
-            return {
-                ...state,
-                channelTagsMask: editChannelTagsMask(state.channelTagsMask, action.tag, action.isChecked),
-                maskCommitted: false,
-            };
-        case COMMIT_CHANNEL_TAGS_MASK:
-            commitChannelTagsMask(state.channelTagsMask, state.channelId);
-            return {
-                ...state,
-                maskCommited: true,
             };
         default:
             return state;

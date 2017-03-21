@@ -9,20 +9,30 @@ import {
     View,
     Text
 } from 'react-native';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import * as tagsMaskManagerActions from '../actions/tagsMaskManagerActions';
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: 'white',
     },
     cellContainer: {
         flex: 1,
+        backgroundColor: 'white',
+        alignSelf: 'stretch',
+        borderBottomWidth: 1,
+        borderBottomColor: '#E0E0E0',
         flexDirection: 'row',
-        justifyContent: 'space-around',
+        justifyContent: 'space-between',
+        padding: 8,
     },
     text: {
         fontSize: 16,
     }
 });
-export default class TagsMaskManager extends Component {
+class TagsMaskManager extends Component {
     static propTypes = {
         channelId: PropTypes.string,
         tagsMask: PropTypes.array,
@@ -35,15 +45,20 @@ export default class TagsMaskManager extends Component {
         const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.state = {
             dataSource: ds.cloneWithRows(this.props.tagsMask),
-        }
+        };
     }
 
     componentWillReceiveProps(nextProps) {
+        console.log('Receives Props');
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(nextProps.tagsMask),
         });
     }
 
+    componentDidMount() {
+        console.log('Did Mount');
+         this.props.getTagsMask(this.props.channelId);
+    }
 
     _renderCell = (data) => {
         return (
@@ -60,10 +75,21 @@ export default class TagsMaskManager extends Component {
     render() {
         return(
             <ListView
-                style={{flex: 1}}
+                style={styles.container}
                 dataSource={this.state.dataSource}
                 renderRow={(rowData) => this._renderCell(rowData)}
                 />
         );
     }
 }
+
+export default connect(
+    state => {
+        return {
+            ...state.tagsMaskManagerState,
+        }
+    },
+    dispatch => ({
+        ...bindActionCreators({...tagsMaskManagerActions}, dispatch)
+    })
+)(TagsMaskManager);

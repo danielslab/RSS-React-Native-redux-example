@@ -14,15 +14,25 @@ export function getTags() {
 }
 
 export function commitTags(tags) {
+    console.log("Commit");
     let channels = realm.objects('Channel');
     realm.write(() => {
         for (let i = 0; i < channels.length; ++i) {
             for (let j = 0; j < tags.length; ++j) {
-                let tag = channels[i].tagsMask.filtered('name = "' + tags[i] + '"')
+                let tag = channels[i].tagsMask.filtered('name = "' + tags[j] + '"')[0];
                 if (!tag) {
-                    channels[i].tagsMask.push({name: tags[i], isChecked: false});
+                    console.log('GOT A TAG', tags[j]);
+                    channels[i].tagsMask.push({name: tags[j], isChecked: false});
                 }
             }
+            let set = new Set(tags);
+            let newMask = [];
+            for (let j = 0; j<channels[i].tagsMask.length; ++j) {
+                if (set.has(channels[i].tagsMask[j].name)) {
+                    newMask.push(channels[i].tagsMask[j]);
+                }
+            }
+            channels[i].tagsMask = newMask;
         }
         let oldTags = realm.objects('Tag');
         realm.delete(oldTags);
