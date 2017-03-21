@@ -1,8 +1,7 @@
 /**T
  * Created by denissamohvalov on 18.03.17.
  */
-import realm from '../db';
-
+import {getTags, commitTags, commitChannelTagsMask, getChannelTagsMask} from '../db/handlers';
 import {
     GET_TAGS,
     ADD_TAG,
@@ -23,15 +22,6 @@ let initialState = {
 };
 
 
-function getTags() {
-    let objects = realm.objects('Tag');
-    let out = [];
-    for (let i = 0; i < objects.length; ++i) {
-        out.push(objects[i].name);
-    }
-    return out;
-}
-
 function addTag(tag, tags) {
     let out = new Set([...tags, tag]);
     return [...out];
@@ -43,38 +33,6 @@ function deleteTag(tag, tags) {
         if (tags[i] !== tag) {
             out.push(tags[i]);
         }
-    }
-    return out;
-}
-
-
-function commitTags(tags) {
-    let channels = realm.objects('Channel');
-    realm.write(() => {
-        for (let i = 0; i < channels.length; ++i) {
-            for (let j = 0; j < tags.length; ++j) {
-                let tag = channels[i].tagsMask.filtered('name = "' + tags[i] + '"')
-                if (!tag) {
-                    channels[i].tagsMask.push({name: tags[i], isChecked: false});
-                }
-            }
-        }
-        let oldTags = realm.objects('Tag');
-        realm.delete(oldTags);
-        for (let i = 0; i < tags.length; ++i) {
-            realm.create('Tag', {name: tags[i]});
-        }
-    });
-}
-
-function getChannelTagsMask(channelId) {
-    let out = [];
-    let channel = realm.objects('Channel').filtered('id = "' + channelId + '"')[0];
-    for (let i = 0; i < channel.tagsMask; ++i) {
-        out.push({
-            name: channel[i].name,
-            isChecked: channel[i].isChecked,
-        });
     }
     return out;
 }
@@ -94,15 +52,6 @@ function editChannelTagsMask(tagsMask, name, isChecked) {
     return out;
 }
 
-function commitChannelTagsMask(tagsMask, channelId) {
-    let channel = realm.objects('Channel').filtered('id = "' + channelId + '"')[0];
-    realm.write(() => {
-        realm.delete(channel.tagsMask);
-        for (let i = 0; i < tagsMask.length; ++i) {
-            channel.tagsMask.push({name: tagsMask[i].name, isChecked: tagsMask[i].isChecked});
-        }
-    });
-}
 
 
 export default function tagsState(state = initialState, action) {

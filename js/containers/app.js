@@ -9,8 +9,8 @@ import Rss from './index';
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 const reducer = combineReducers(reducers);
 const store = createStoreWithMiddleware(reducer);
-import realm from '../db';
-
+import realm from '../db/schemas';
+import {addChannel} from '../db/handlers';
 export default class App extends Component {
     fillDB() {
         realm.write(() => {
@@ -45,15 +45,10 @@ export default class App extends Component {
         ];
         realm.write(() => {
             realm.delete(realm.objects('Channel'));
-            for (channel of channels) {
-                realm.create('Channel',{
-                    url: channel.url,
-                    name: channel.name,
-                    id: channel.id,
-                    faviconUrl: channel.faviconUrl,
-                })
-            }
         });
+        for (channel of channels) {
+            addChannel(channel.id, channel.url, channel.name, channel.faviconUrl);
+        }
 
     }
     componentDidMount() {

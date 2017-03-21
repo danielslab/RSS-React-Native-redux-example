@@ -13,7 +13,7 @@ import {
 } from '../constants';
 
 import {parseRSSHeader} from '../api';
-import realm from '../db';
+import realm from '../db/schemas';
 import validUrl from 'valid-url';
 
 
