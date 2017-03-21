@@ -3,17 +3,22 @@
  */
 import React, {Component, PropTypes} from 'react';
 import {
-    ListView
+    ListView,
+    View
 } from 'react-native';
 import ChannelCell from './ChannelCell';
+import {MAIN_COLOR} from '../constants';
+import ActionButton from 'react-native-action-button';
+
 export default class ManageChannels extends Component {
     static propTypes = {
         channels: PropTypes.object,
-        editChannel: PropTypes.func,
         deleteChannel: PropTypes.func,
-        getChannelTagsMask: PropTypes.func,
         onPressChannel: PropTypes.func,
         getChannels: PropTypes.func,
+        showAddChannelDialog: PropTypes.func,
+        showEditChannelDialog: PropTypes.func,
+        showEditTagsDialog: PropTypes.func,
     };
 
     constructor(props) {
@@ -34,20 +39,38 @@ export default class ManageChannels extends Component {
         });
     }
 
+    _showAdd = () => {
+        this.props.showAddChannelDialog()
+        this.props.navigator.push({title: 'Add Channel'});
+    };
+
+    _showEdit = (id) => {
+        this.props.showEditChannelDialog(id);
+        this.props.navigator.push({title: 'Edit Channel'});
+    };
+
+    _showTags = (id) => {
+        this.props.showEditTagsDialog(id)
+        this.props.navigator.push({title: 'Edit Tags'});
+    };
+
     render() {
-        const {editChannel, deleteChannel, editChannelTags, onPressChannel} = this.props;
+        const {deleteChannel, onPressChannel} = this.props;
         return (
-            <ListView
-                style={{flex: 1}}
-                dataSource={this.state.dataSource}
-                renderRow={(rowData) =>
-                            <ChannelCell
-                                editChannel={editChannel}
-                                deleteChannel={deleteChannel}
-                                getChannelTagsMask={getChannelTagsMask}
-                                onPressChannel={onPressChannel}
-                                {...rowData}/> }
-            />
+            <View style={{flex: 1}}>
+                <ListView
+                    style={{flex: 1}}
+                    dataSource={this.state.dataSource}
+                    renderRow={(rowData) =>
+                                <ChannelCell
+                                    editChannel={this._showEdit}
+                                    deleteChannel={deleteChannel}
+                                    getChannelTagsMask={this._showTags}
+                                    onPressChannel={onPressChannel}
+                                    {...rowData}/> }
+                />
+                <ActionButton buttonColor={MAIN_COLOR} onPress={this._showAdd}/>
+            </View>
         )
     }
 }

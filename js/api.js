@@ -22,29 +22,23 @@ let fetch = (url) => (
     })
 );
 
-let parseXML = (xml) => (
+let parseSections = (xml) => (
     new Promise((resolve) => {
         let i;
         let items;
-        let result = {
-            header: {
-                id: `section-${++sectionId}`,
-                title: xml.getElementsByTagName('title')[0].textContent,
-                link: xml.getElementsByTagName('link')[0].textContent
-            },
-            sections: []
-        };
-
+        result = [];
         items = xml.getElementsByTagName('item');
         i = 0;
-
         while (i < items.length) {
             if (items.hasOwnProperty(i)) {
-                result.sections.push({
+                let enclosure = items[i].getElementsByTagName('enclosure')[0]
+                result.push({
                     id: i,
                     title: items[i].getElementsByTagName('title')[0].textContent,
                     link: items[i].getElementsByTagName('link')[0].textContent,
-                    description: items[i].getElementsByTagName('description')[0].textContent
+                    description: items[i].getElementsByTagName('description')[0].textContent,
+                    date: items[i].getElementsByTagName('pubDate')[0].textContent,
+                    faviconUrl: enclosure && enclosure.getAttribute('url')
                 });
 
                 i++;
@@ -55,6 +49,18 @@ let parseXML = (xml) => (
     })
 );
 
+let parseHeader = (xml) => (
+    new Promise((resolve) => {
+        let image = xml.getElementsByTagName('image')[0];
+        let result = {
+                id: `section-${++sectionId}`,
+                title: xml.getElementsByTagName('title')[0].textContent,
+                link: xml.getElementsByTagName('link')[0].textContent,
+                faviconUrl: image && image.getElementsByTagName('url')[0].textContent,
+        };
+        resolve(result);
+    })
+);
 let parseResult = (response) => (
     new Promise((resolve, reject) => {
         let dom = new DOMParser({
@@ -72,9 +78,18 @@ let parseResult = (response) => (
 
 let parseRss = (url) => {
     return new Promise((resolve, reject) => {
-        fetch(url).then(parseResult, reject).then(parseXML, reject).then(resolve, reject);
+        fetch(url).then(parseResult, reject).then(parseSections, reject).then(resolve, reject);
     });
 };
 
-export {parseRss};
+let parseRSSHeader = (url) => {
+    return new Promise((resolve, reject) => {
+        fetch(url).then(parseResult, reject).then(parseHeader, reject).then(resolve, reject);
+    });
+};
+
+export {
+    parseRss,
+    parseRSSHeader
+};
 

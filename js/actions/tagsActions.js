@@ -33,10 +33,10 @@ export function getTags() {
     }
 }
 
-export function getChannelTagsMask(channelId) {
+export function getChannelTagsMask(id) {
     return {
         type: GET_CHANNEL_TAGS_MASK,
-        channelId,
+        id,
     }
 }
 

@@ -6,6 +6,7 @@ const FeedSchema = {
         id: 'string',
         channel: 'Channel',
         is_bookmarked: 'bool',
+        date: 'date',
         title: 'string',
         subtitle: 'string',
         faviconUrl: 'string'
@@ -25,6 +26,7 @@ const ChannelSchema = {
             objectType: 'TagMask'
         },
         url: 'string',
+        faviconUrl: {type: 'string', optional: true},
         name: 'string',
     }
 };
@@ -44,5 +46,5 @@ const TagSchema = {
     }
 };
 
-let realm = new Realm({schema: [FeedSchema, ChannelSchema, TagMaskSchema, TagSchema], schemaVersion: 2});
+let realm = new Realm({schema: [FeedSchema, ChannelSchema, TagMaskSchema, TagSchema], schemaVersion: 4});
 export default realm;

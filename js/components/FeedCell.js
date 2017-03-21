@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
     },
     textContainer: {
-        marginLeft: 24,
+        marginLeft: 20,
         flexWrap: 'wrap',
     },
     icon: {

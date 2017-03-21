@@ -4,8 +4,10 @@
 import sideMenuState from './sideMenuReducers';
 import allState from './allReducers';
 import tagsState from './tagsReducer';
+import channelsState from './channelsReducer';
 export {
     sideMenuState,
     allState,
-    tagsState
+    tagsState,
+    channelsState
 };

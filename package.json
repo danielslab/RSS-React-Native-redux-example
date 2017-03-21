@@ -19,7 +19,8 @@
     "react-redux": "^5.0.3",
     "realm": "^1.1.1",
     "redux": "^3.6.0",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "valid-url": "^1.0.9"
   },
   "devDependencies": {
     "babel-jest": "19.0.0",

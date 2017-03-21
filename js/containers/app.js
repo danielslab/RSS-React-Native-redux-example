@@ -9,7 +9,7 @@ import Rss from './index';
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 const reducer = combineReducers(reducers);
 const store = createStoreWithMiddleware(reducer);
-import {realm} from '../db';
+import realm from '../db';
 
 export default class App extends Component {
     fillDB() {
@@ -21,9 +21,45 @@ export default class App extends Component {
             }
         });
     }
-    componentDidMount() {
-        // this.fillDB();
+
+    fillChannels() {
+        let channels = [
+            {
+                url: 'https://meduza.io/rss/all',
+                faviconUrl: 'https://meduza.io/images/rss-logo.png',
+                name: 'Meduza',
+                id: '1',
+            },
+            {
+                url: 'https://tvrain.ru/export/rss/programs/1045.xml',
+                faviconUrl: '',
+                name: 'Rain',
+                id: '2',
+            },
+            {
+                url: 'https://www.vedomosti.ru/rss/news',
+                faviconUrl: 'https://cdn.vedomosti.ru/assets/rss_logo.gif',
+                name: 'Vedomosti',
+                id: '3'
+            }
+        ];
+        realm.write(() => {
+            realm.delete(realm.objects('Channel'));
+            for (channel of channels) {
+                realm.create('Channel',{
+                    url: channel.url,
+                    name: channel.name,
+                    id: channel.id,
+                    faviconUrl: channel.faviconUrl,
+                })
+            }
+        });
+
     }
+    componentDidMount() {
+        this.fillChannels();
+    }
+
   render() {
     return (
       <Provider store={store}>

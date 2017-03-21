@@ -25,7 +25,6 @@ let initialState = {
 
 function getTags() {
     let objects = realm.objects('Tag');
-    console.log(objects);
     let out = [];
     for (let i = 0; i < objects.length; ++i) {
         out.push(objects[i].name);

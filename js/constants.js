@@ -16,7 +16,8 @@ const getIcons = () => {
             refresh: 'ios-refresh',
             star: 'ios-star',
             trash: 'ios-trash',
-            close: 'ios-close-circle'
+            close: 'ios-close-circle',
+            arrowBack: 'ios-arrow-round-back',
         }
     } else {
         return {
@@ -27,11 +28,27 @@ const getIcons = () => {
             refresh: 'md-refresh',
             star: 'md-star',
             trash: 'md-trash',
-            close: 'md-close-circle'
+            close: 'md-close-circle',
+            arrowBack: 'md-arrow-round-back'
         }
     }
 };
 export const icons = getIcons();
+
+//fonts
+const getFonts = () => {
+    if (Platform.OS === 'ios') {
+        return {
+            serif: 'Helvetica'
+        }
+    } else {
+        return {
+            serif: 'sans-serif',
+        }
+    }
+};
+
+export const fonts = getFonts();
 
 //actions
 export const ON_ALL_SELECTED = 'ON_ALL_SELECTED';
@@ -53,3 +70,8 @@ export const ON_PRESS_TAG = "ON_PRESS_TAG";
 export const EDIT_CHANNEL = "EDIT_CHANNEL";
 export const DELETE_CHANNEL = "DELETE_CHANNEL";
 export const GET_CHANNELS = "GET_CHANNELS";
+export const SHOW_ADD_CHANNEL_DIALOG = "SHOW_ADD_CHANNEL_DIALOG";
+export const ADD_CHANNEL = "ADD_CHANNEL";
+export const SHOW_EDIT_CHANNEL_DIALOG = "SHOW_EDIT_CHANNEL_DIALOG";
+export const SHOW_EDIT_TAGS_DIALOG = "SHOW_EDIT_TAGS_DIALOG";
+export const RESET_FORM = "RESET_FORM";

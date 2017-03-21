@@ -13,17 +13,28 @@ import {
     Text,
     TouchableOpacity,
     Navigator,
-    Alert
+    Alert,
+    Platform
 } from 'react-native';
+
 import {MAIN_COLOR, icons} from '../constants';
 
 import * as allActions from '../actions/allActions';
 import * as tagsActions from '../actions/tagsActions';
+import * as channelsActions from '../actions/channelsActions';
 
 import All from './All';
 import ManageChannels from './ManageChannels';
 import Tags from './Tags';
+import ChannelForm from './ChannelForm';
 
+const topPanelMarginTop = () => {
+    if (Platform.OS === 'ios') {
+        return 66;
+    } else {
+        return 56;
+    }
+};
 const styles = StyleSheet.create({
     titleText: {
         marginTop: 16,
@@ -44,7 +55,7 @@ const styles = StyleSheet.create({
     },
     content: {
         flex: 1,
-        marginTop: 56,
+        marginTop: topPanelMarginTop(),
     }
 });
 
@@ -59,7 +70,18 @@ class Main extends Component {
     };
 
     _renderLeftButton = (route, navigator, index, navState) => {
-        const { openDrawer } = this.props;
+        const {openDrawer} = this.props;
+        if (route && route.title) {
+            return (
+                <TouchableOpacity style={styles.leftIcon} onPress={() =>
+                    {
+                        navigator.pop();
+                    }
+                }>
+                    <Icon name={icons.arrowBack} size={24} color="white"/>
+                </TouchableOpacity>
+            );
+        }
         return (
             <TouchableOpacity style={styles.leftIcon} onPress={() => openDrawer()}>
                 <Icon name={icons.menu} size={24} color="white"/>
@@ -68,14 +90,13 @@ class Main extends Component {
     };
 
     _renderRightButton = (route, navigator, index, navState) => {
-        console.log(this.props.tagsState);
         if (this.props.isAllSelected) {
             return (
                 <TouchableOpacity style={styles.rightIcon} onPress={() => this.props.allActions.refreshFeeds()}>
                     <Icon name={icons.refresh} size={24} color="white"/>
                 </TouchableOpacity>
             );
-        } else if (!this.props.tagsState.tagsCommitted){
+        } else if (!this.props.tagsState.tagsCommitted) {
             return (
                 <TouchableOpacity style={styles.leftIcon}
                                   onPress={() => this._confirmCommit(this.props.tagsActions.commitTags)}>
@@ -108,37 +129,67 @@ class Main extends Component {
     _renderTitle = (route, navigator, index, navState) => {
         const {isAllSelected, isTagsSelected, isManageChannelsSelected} = this.props;
         let title = '';
+        if (route && route.title) {
+            title = route.title;
+        } else
         if (isAllSelected) {
             title = 'All';
-        }
-        if (isTagsSelected) {
+        } else if (isTagsSelected) {
             title = 'Tags';
-        }
-        if (isManageChannelsSelected) {
+        } else if (isManageChannelsSelected) {
             title = 'Manage Channels';
         }
         return <Text style={styles.titleText}>{title}</Text>;
     };
 
-    _renderContent = () => {
+    _renderContent = (navigator, route) => {
         const {isAllSelected, isManageChannelsSelected, isTagsSelected} = this.props;
         const {allActions, allState} = this.props;
         const {tagsActions, tagsState} = this.props;
+        const {channelsActions, channelsState} = this.props;
+        if (route && route.title === 'Add Channel') {
+            return <ChannelForm
+                        navigator={navigator}
+                        type="add"
+                        {...channelsActions}
+                        {...channelsState}/>;
+        } else if (route && route.title === 'Edit Channel') {
+            return <ChannelForm
+                        navigator={navigator}
+                        type="edit"
+                        {...channelsActions}
+                        {...channelsState}/>;
+        } else if (route && route.title === 'Edit Tags') {
+            return <Tags
+                        navigator={navigator}
+                        showCheckboxes={true}
+                        {...tagsActions}
+                        {...tagsState}/>;
+        }
         if (isAllSelected) {
-            return <All allActions={allActions} allState={allState}/>;
-        }
-        if (isManageChannelsSelected) {
-            return <ManageChannels/>
-        }
-        if (isTagsSelected) {
-            return <Tags {...tagsActions} {...tagsState} showCheckboxes={false}/>;
+            return <All
+                navigator={navigator}
+                allActions={allActions}
+                allState={allState}/>;
+        } else if (isManageChannelsSelected) {
+            return <ManageChannels
+                navigator={navigator}
+                getChannelTagsMask={tagsActions.getChannelTagsMask}
+                {...channelsActions}
+                {...channelsState}/>
+        } else if (isTagsSelected) {
+            return <Tags
+                navigator={navigator}
+                showCheckboxes={false}
+                {...tagsActions}
+                {...tagsState}/>;
         }
     };
 
     render() {
         return (
             <Navigator
-                renderScene={(route, navigator) => (<View style={styles.content}>{this._renderContent()}</View>) }
+                renderScene={(route, navigator) => (<View style={styles.content}>{this._renderContent(navigator, route)}</View>) }
                 navigationBar={
                     <Navigator.NavigationBar
                         routeMapper={{
@@ -154,12 +205,16 @@ class Main extends Component {
 }
 
 export default connect(
-    state => { return {
-        allState: state.allState,
-        tagsState: state.tagsState,
-    }},
+    state => {
+        return {
+            allState: state.allState,
+            tagsState: state.tagsState,
+            channelsState: state.channelsState,
+        }
+    },
     dispatch => ({
         allActions: bindActionCreators({...allActions}, dispatch),
-        tagsActions: bindActionCreators({...tagsActions}, dispatch)
+        tagsActions: bindActionCreators({...tagsActions}, dispatch),
+        channelsActions: bindActionCreators({...channelsActions}, dispatch)
     })
 )(Main);

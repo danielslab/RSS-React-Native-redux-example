@@ -8,7 +8,9 @@ import {
     View,
     Text,
     TouchableOpacity,
-    Linking
+    Linking,
+    Image,
+    Alert
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
@@ -27,14 +29,15 @@ const styles = StyleSheet.create({
         margin: 5,
     },
     textIconContainer: {
-        flex: 0.7,
+        flex: 0.75,
         marginLeft: 8,
+        overflow: 'hidden',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start',
     },
     textContainer: {
-        marginLeft: 24,
+        marginLeft: 20,
         flexWrap: 'wrap',
     },
     icon: {
@@ -55,15 +58,17 @@ const styles = StyleSheet.create({
         opacity: 0.54,
     },
     iconsContainer: {
-        flex: 0.3,
+        flex: 0.25,
+        paddingLeft: 8,
         flexDirection: 'row',
-        justifyContent: 'flex-end'
+        justifyContent: 'space-around'
     }
 });
+const defaultFavicon = 'https://cdn2.iconfinder.com/data/icons/basic-office-snippets/170/Basic_Office-7-512.png';
 export default class ChannelCell extends Component {
     static propTypes = {
         id: PropTypes.string,
-        title: PropTypes.string,
+        name: PropTypes.string,
         url: PropTypes.string,
         faviconUrl: PropTypes.string,
         onPressChannel: PropTypes.func,
@@ -80,16 +85,30 @@ export default class ChannelCell extends Component {
         Linking.openURL(this.props.url);
     };
 
+    _confirmDelete = (id) => {
+        Alert.alert(
+            'Confirmation',
+            'Are you sure you want to delete channel?',
+            [
+                {text: 'Cancel', onPress: () => {}},
+                {text: 'OK', onPress: () => this.props.deleteChannel(id)}
+            ]
+        );
+    };
+
     render() {
-        const {id, title, url, faviconUrl, onPressChannel, editChannel, getChannelTagsMask, deleteChannel} = this.props;
+        console.log('FAVICON URL', this.props.faviconUrl);
+        const {id, name, url, faviconUrl, onPressChannel, editChannel, getChannelTagsMask} = this.props;
         return (
             <View style={styles.container}>
                 <TouchableOpacity style={styles.textIconContainer} onPress={() => onPressChannel(id)}>
-                    <Image source={{uri: faviconUrl}} style={styles.icon} />
+                    <Image source={{uri: faviconUrl || defaultFavicon}} style={styles.icon} />
                     <View style={styles.textContainer}>
-                        <Text style={styles.title} numberOfLines={1}>{title}</Text>
-                        <TouchableOpacity onPress={this._goToUrl}>
-                            <Text style={styles.url} numberOfLines={1}>{subtitle}</Text>
+                        <View style={{flex: 1}}>
+                            <Text style={styles.title} numberOfLines={1}>{name}</Text>
+                        </View>
+                        <TouchableOpacity style={{flex: 1}} onPress={this._goToUrl}>
+                            <Text style={styles.url} numberOfLines={1}>{url}</Text>
                         </TouchableOpacity>
                     </View>
                 </TouchableOpacity>
@@ -101,11 +120,11 @@ export default class ChannelCell extends Component {
                     </TouchableOpacity>
                     <TouchableOpacity  onPress={() => editChannel(id)}>
                         <MaterialIcon
-                            name={"mode edit"}
+                            name="edit"
                             size={24} />
                     </TouchableOpacity>
-                    <TouchableOpacity  onPress={() => deleteChannel(id)}>
-                        <MaterialIcon
+                    <TouchableOpacity  onPress={() => this._confirmDelete(id)}>
+                        <Icon
                             name={icons.trash}
                             size={24} />
                     </TouchableOpacity>

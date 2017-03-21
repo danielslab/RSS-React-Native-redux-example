@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     tagText: {
         color: 'black',
         opacity: 0.87,
-        fontFamily: 'sans-serif',
+        fontFamily: icons.serif,
         fontSize: 13,
         marginRight: 4,
     },
