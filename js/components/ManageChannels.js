@@ -50,7 +50,7 @@ export default class ManageChannels extends Component {
     };
 
     _showTags = (id) => {
-        this.props.showEditTagsDialog(id)
+        this.props.showEditTagsDialog(id);
         this.props.navigator.push({title: 'Edit Tags'});
     };
 

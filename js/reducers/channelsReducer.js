@@ -9,9 +9,10 @@ import {
     SHOW_ADD_CHANNEL_DIALOG,
     ADD_CHANNEL,
     RESET_FORM,
-    SHOW_EDIT_CHANNEL_DIALOG
+    SHOW_EDIT_CHANNEL_DIALOG,
+    SHOW_EDIT_TAGS_DIALOG
 } from '../constants';
-import {deleteChannel, editChannel, getChannels, getChannelById, addChannel} from '../db/handlers';
+import {deleteChannel, editChannel, getChannels, getChannelById, addChannel, getChannelTagsMask} from '../db/handlers';
 
 let initialState = {
     channels: [],
@@ -21,6 +22,7 @@ let initialState = {
     id: '',
     name: '',
     faviconUrl: '',
+    channelMask: []
 };
 
 
@@ -61,6 +63,11 @@ export default function channelsState(state = initialState, action = {}) {
             return {
                 ...state,
                 ...getChannelById(action.id),
+            };
+        case SHOW_EDIT_TAGS_DIALOG:
+            return {
+                ...state,
+                id: action.id,
             };
         case ADD_CHANNEL:
             if (action.isChannelValid === 'invalid') {

@@ -45,15 +45,25 @@ export function commitChannelTagsMask(tagsMask, channelId) {
 export function getChannelTagsMask(channelId) {
     let out = [];
     let channel = realm.objects('Channel').filtered('id = "' + channelId + '"')[0];
-    for (let i = 0; i < channel.tagsMask; ++i) {
+    for (let i = 0; i < channel.tagsMask.length; ++i) {
         out.push({
-            name: channel[i].name,
-            isChecked: channel[i].isChecked,
+            name: channel.tagsMask[i].name,
+            isChecked: channel.tagsMask[i].isChecked,
         });
     }
     return out;
 }
 
+export function editTagMask(channelId, tag, value) {
+    let channel = realm.objects('Channel').filtered('id = "' + channelId + '"')[0];
+    realm.write(() => {
+        for (let i = 0; i < channel.tagsMask.length; ++i) {
+            if (channel.tagsMask[i].name === tag) {
+                channel.tagsMask[i].isChecked = value;
+            }
+        }
+    });
+}
 export function deleteChannel(id) {
     let out = [];
     let toDelete = realm.objects('Channel').filtered('id = "' + id + '"');

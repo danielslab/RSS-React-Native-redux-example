@@ -22,11 +22,13 @@ import {MAIN_COLOR, icons} from '../constants';
 import * as allActions from '../actions/allActions';
 import * as tagsActions from '../actions/tagsActions';
 import * as channelsActions from '../actions/channelsActions';
+import * as tagsMaskManagerActions from '../actions/tagsMaskManagerActions';
 
 import All from './All';
 import ManageChannels from './ManageChannels';
 import Tags from './Tags';
 import ChannelForm from './ChannelForm';
+import TagsMaskManager from './TagsMaskManager';
 
 const topPanelMarginTop = () => {
     if (Platform.OS === 'ios') {
@@ -147,6 +149,7 @@ class Main extends Component {
         const {allActions, allState} = this.props;
         const {tagsActions, tagsState} = this.props;
         const {channelsActions, channelsState} = this.props;
+        const {tagsMaskManagerActions, tagsMaskManagerState} = this.props;
         if (route && route.title === 'Add Channel') {
             return <ChannelForm
                         navigator={navigator}
@@ -160,11 +163,11 @@ class Main extends Component {
                         {...channelsActions}
                         {...channelsState}/>;
         } else if (route && route.title === 'Edit Tags') {
-            return <Tags
-                        navigator={navigator}
-                        showCheckboxes={true}
-                        {...tagsActions}
-                        {...tagsState}/>;
+            tagsMaskManagerActions.getTagsMask(channelsState.id);
+            return <TagsMaskManager
+                        channelId={channelsState.id}
+                        {...tagsMaskManagerActions}
+                        {...tagsMaskManagerState}/>
         }
         if (isAllSelected) {
             return <All
@@ -174,7 +177,6 @@ class Main extends Component {
         } else if (isManageChannelsSelected) {
             return <ManageChannels
                 navigator={navigator}
-                getChannelTagsMask={tagsActions.getChannelTagsMask}
                 {...channelsActions}
                 {...channelsState}/>
         } else if (isTagsSelected) {
@@ -210,11 +212,13 @@ export default connect(
             allState: state.allState,
             tagsState: state.tagsState,
             channelsState: state.channelsState,
+            tagsMaskManagerState: state.tagsMaskManagerState,
         }
     },
     dispatch => ({
         allActions: bindActionCreators({...allActions}, dispatch),
         tagsActions: bindActionCreators({...tagsActions}, dispatch),
-        channelsActions: bindActionCreators({...channelsActions}, dispatch)
+        channelsActions: bindActionCreators({...channelsActions}, dispatch),
+        tagsMaskManagerActions: bindActionCreators({...tagsMaskManagerActions}, dispatch)
     })
 )(Main);
