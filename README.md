@@ -1,2 +1,2 @@
 # RSS-React-Native
-![](https://gifyu.com/images/RssAppVideo.gif)
+[Demonstration](https://gifyu.com/images/RssAppVideo.gif)
