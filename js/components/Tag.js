@@ -35,46 +35,24 @@ const styles = StyleSheet.create({
     },
 
 });
-export default class Tags extends Component {
+export default class Tag extends Component {
     static propTypes = {
         tag: PropTypes.string,
-        selectTag: PropTypes.func,
         deleteTag: PropTypes.func,
         onPressTag: PropTypes.func,
-        isChecked: PropTypes.bool,
-        showCheckBox: PropTypes.bool,
-        showDelete: PropTypes.bool,
-    };
-
-    _renderTag = () => {
-        const {tag, selectTag, deleteTag, showCheckBox, showDelete, id} = this.props;
-        return (
-            <View style={styles.tag}>
-                {showCheckBox &&
-                <CheckBox
-                    label={tag}
-                    checked={isChecked}
-                    onChange={(checked) => selectTag(tag, checked)}
-                />}
-                <Text style={styles.tagText}>{tag}</Text>
-                {showDelete &&
-                <TouchableOpacity onPress={() => deleteTag(tag)}>
-                    <Icon size={24} name={icons.close}/>
-                </TouchableOpacity>}
-            </View>
-        );
     };
 
     render() {
-        if (this.props.showCheckBox) {
-            return this._renderTag();
-        }
-        if (this.props.showDelete) {
-            return (
-                <TouchableOpacity onPress={this.props.onPressTag}>
-                    {this._renderTag()}
-                </TouchableOpacity>
-            );
-        }
+        const {tag,  deleteTag, onPressTag} = this.props;
+        return (
+            <TouchableOpacity onPress={this.props.onPressTag}>
+                <View style={styles.tag}>
+                    <Text style={styles.tagText}>{tag}</Text>
+                    <TouchableOpacity onPress={() => deleteTag(tag)}>
+                        <Icon size={24} name={icons.close}/>
+                    </TouchableOpacity>
+                </View>
+            </TouchableOpacity>
+        );
     };
 }

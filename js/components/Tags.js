@@ -49,7 +49,6 @@ export default class Tags extends Component {
         deleteTag: PropTypes.func,
         addTag: PropTypes.func,
         onPressTag: PropTypes.func,
-        selectTag: PropTypes.func,
         commitTags: PropTypes.func,
     };
 
@@ -65,7 +64,7 @@ export default class Tags extends Component {
     }
 
     render() {
-        const {deleteTag, onPressTag, selectTag, tags} = this.props;
+        const {deleteTag, onPressTag,  tags} = this.props;
         return (
             <View style={styles.outerContainer}>
                 <ScrollView style={{flex: 1}}>
@@ -75,11 +74,8 @@ export default class Tags extends Component {
                                 <Tag
                                     key={key}
                                     tag={tag}
-                                    selectTag={selectTag}
                                     deleteTag={deleteTag}
                                     onPressTag={onPressTag}
-                                    showCheckBox={this.props.showCheckboxes}
-                                    showDelete={!this.props.showCheckboxes}
                                 />
                             );
                         })}
