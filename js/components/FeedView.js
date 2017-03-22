@@ -31,6 +31,8 @@ const styles = StyleSheet.create({
     },
     textContainer: {
         flexWrap: 'wrap',
+        paddingLeft: 10,
+        paddingRight: 10,
     },
     titleDateContainer: {
         marginBottom: 10,
@@ -48,6 +50,12 @@ const styles = StyleSheet.create({
     },
     button: {
         alignSelf: 'center',
+    },
+    image: {
+        marginTop: 10,
+        marginBottom: 10,
+        height: 200,
+        width: 300
     }
 });
 
@@ -66,6 +74,7 @@ export default class FeedView extends Component {
 
     render() {
         const {title, description, faviconUrl, date} = this.props;
+        console.log("Faviocn url", faviconUrl);
         return (
             <ScrollView style={styles.container} contentContainerStyle={styles.content}>
                 <View style={styles.titleDateContainer}>
@@ -73,7 +82,7 @@ export default class FeedView extends Component {
                     <Text style={styles.dateText}>{dateformat(date, 'mediumDate')} {dateformat(date, 'shortTime')}</Text>
                 </View>
                 {(faviconUrl && faviconUrl !== '') &&
-                    <Image source={{uri: faviconUrl}}/>}
+                    <Image style={styles.image} source={{uri: faviconUrl}}/>}
                 <View style={styles.textContainer}>
                     <Text style={styles.description}>{enhanceStr(description)}</Text>
                 </View>

@@ -12,16 +12,6 @@ const store = createStoreWithMiddleware(reducer);
 import realm from '../db/schemas';
 import {addChannel} from '../db/handlers';
 export default class App extends Component {
-    fillDB() {
-        realm.write(() => {
-            realm.delete(realm.objects('Tag'));
-            let tags = ["Apple", "Google", "Oracle", "Baidu", "Alibaba", "Yahoo", "McKinsey&Co", "The Boston Consulting Group"];
-            for (tag of tags) {
-                realm.create('Tag', {name: tag});
-            }
-        });
-    }
-
     fillChannels() {
         let channels = [
             {
@@ -43,20 +33,15 @@ export default class App extends Component {
                 id: '3'
             }
         ];
-        for (channel of channels) {
-            addChannel(channel.id, channel.url, channel.name, channel.faviconUrl);
+        let channel = realm.objects('Channel')[0];
+        if (!channel) {
+            for (channel of channels) {
+                addChannel(channel.id, channel.url, channel.name, channel.faviconUrl);
+            }
         }
     }
 
-    _clearDB = () => {
-        realm.write(() => {
-            realm.delete(realm.objects('Channel'));
-            realm.delete(realm.objects('Feed'));
-        });
-    };
-
     componentDidMount() {
-         this._clearDB();
          this.fillChannels();
     }
 

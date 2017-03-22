@@ -35,11 +35,6 @@ export default function allState(state = initialState, action = {}) {
             if (state.feedToShow) {
                 newFeedToShow = handlers.getFeedById(action.id);
             }
-            let allFeeds = handlers.getFeeds(state.tag, state.channelId);
-            let bookmarkedFeeds = handlers.getFeeds(state.tag, state.channelId, true);
-            for(book of  bookmarkedFeeds) {
-                console.log("TAP STAR", book.title);
-            }
             return {
                 ...state,
                 allFeeds: handlers.getFeeds(state.tag, state.channelId),

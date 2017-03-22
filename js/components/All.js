@@ -61,13 +61,8 @@ export default class All extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        for (let i = 0; i < nextProps.bookmarkedFeeds.length; ++i) {
-            console.log(nextProps.bookmarkedFeeds[i].title);
-        }
         this.setState({
             dataSourceAllFeeds: ds.cloneWithRows(nextProps.allFeeds),
-        });
-        this.setState({
             dataSourceBookmarkedFeeds: ds.cloneWithRows(nextProps.bookmarkedFeeds),
         });
     }
