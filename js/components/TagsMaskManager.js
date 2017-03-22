@@ -63,7 +63,7 @@ class TagsMaskManager extends Component {
     _renderCell = (data) => {
         return (
             <View style={styles.cellContainer}>
-                <Text style={styles.text}>{data.name}</Text>
+                <Text style={styles.text} numberOfLines={1}>{data.name}</Text>
                 <Switch
                     value={data.isChecked}
                     onValueChange={(value) => this.props.selectTag(this.props.channelId, data.name, value)}
