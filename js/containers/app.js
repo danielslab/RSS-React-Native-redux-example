@@ -43,16 +43,21 @@ export default class App extends Component {
                 id: '3'
             }
         ];
-        realm.write(() => {
-            realm.delete(realm.objects('Channel'));
-        });
         for (channel of channels) {
             addChannel(channel.id, channel.url, channel.name, channel.faviconUrl);
         }
-
     }
+
+    _clearDB = () => {
+        realm.write(() => {
+            realm.delete(realm.objects('Channel'));
+            realm.delete(realm.objects('Feed'));
+        });
+    };
+
     componentDidMount() {
-        this.fillChannels();
+         this._clearDB();
+         this.fillChannels();
     }
 
   render() {

@@ -9,7 +9,10 @@ import {
     Platform,
     ScrollView,
     View,
-    StyleSheet
+    StyleSheet,
+    RefreshControl,
+    ActivityIndicator,
+    Text
 } from 'react-native';
 import FeedCell from './FeedCell';
 import {MAIN_COLOR} from '../constants';
@@ -19,46 +22,86 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         height: 2,
     },
+    loader: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center',
+    },
+    segmentedControl: {
+        marginTop: 10,
+        marginLeft: 20,
+        marginRight: 20,
+    }
 });
 
 export default class All extends Component {
     static propTypes = {
-        allState: PropTypes.object,
-        allActions: PropTypes.object,
+        allFeeds: PropTypes.array,
+        bookmarkedFeed: PropTypes.array,
+        tag: PropTypes.string,
+        channelId: PropTypes.string,
+        isRefreshing: PropTypes.bool,
+        refresh: PropTypes.func,
+        onTapStar: PropTypes.func,
+        onFeedPress: PropTypes.func,
     };
 
     constructor(props) {
         super(props);
         const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.state = {
-            dataSourceAllFeeds: ds.cloneWithRows(this.props.allState.allFeeds),
-            dataSourceBookmarkedFeeds: ds.cloneWithRows(this.props.allState.bookmarkedFeeds),
+            dataSourceAllFeeds: ds.cloneWithRows(this.props.allFeeds),
+            dataSourceBookmarkedFeeds: ds.cloneWithRows(this.props.bookmarkedFeeds),
         };
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({
-            dataSourceAllFeeds: this.state.dataSourceAllFeeds.cloneWithRows(nextProps.allState.allFeeds),
-            dataSourceBookmarkedFeeds: this.state.dataSourceBookmarkedFeeds.cloneWithRows(nextProps.allState.bookmarkedFeeds),
+            dataSourceAllFeeds: this.state.dataSourceAllFeeds.cloneWithRows(nextProps.allFeeds),
+            dataSourceBookmarkedFeeds: this.state.dataSourceBookmarkedFeeds.cloneWithRows(nextProps.bookmarkedFeeds),
         });
     }
 
+    _isData = () => {
+        return !(this.props.allFeeds.length === 0);
+    }
+    componentDidMount() {
+        const {refresh} = this.props;
+        if (!this._isData()) {
+            refresh(this.props.tag, this.props.channelId);
+        }
+    }
+
+
     _getListView = dataSource => {
         return (
-            <ListView style={{flex: 1}}
-                      dataSource={dataSource}
-                      renderRow={(rowData) => <FeedCell {...rowData} {...this.props.allActions}/>}
-            />
+            dataSource ?
+                (<ListView style={{flex: 1}}
+                           dataSource={dataSource}
+                           renderRow={(rowData) => <FeedCell
+                                                        {...rowData}
+                                                        onPress={this.props.onFeedPress}
+                                                        onTapStar={this.props.onTapStar}/>}
+                      refreshControl={
+                          <RefreshControl
+                                refreshing={this.props.isRefreshing}
+                                onRefresh={() => this.props.refresh(this.props.tag, this.props.channelId)}/>}
+                />)
+                : (<ActivityIndicator
+                                animating={isRefreshing}
+                                size="large"/>
+                    )
         );
     };
 
     _getTabLayout = (allListView, bookmarkedListView) => {
-        const {selectFeedTab} = this.props.allActions;
-        const {selectedFeedTabIndex} = this.props.allState;
+        const {selectFeedTab} = this.props;
+        const {selectedFeedTabIndex} = this.props;
         if (Platform.OS === 'ios') {
             return (
                 <View style={{flex: 1}}>
-                    <View style={{margin: 20}}>
+                    <View style={styles.segmentedControl}>
                         <SegmentedControlIOS
                             tintColor={MAIN_COLOR}
                             values={['Feeds', 'Favorites']}
@@ -66,8 +109,7 @@ export default class All extends Component {
                             onChange={(event) => { selectFeedTab(event.nativeEvent.selectedSegmentIndex)}}
                         />
                     </View>
-                    {selectedFeedTabIndex === 0 && allListView}
-                    {selectedFeedTabIndex === 1 && bookmarkedListView}
+                    {selectedFeedTabIndex === 0 ? allListView : bookmarkedListView}
                 </View>
             );
         } else {
@@ -99,4 +141,5 @@ export default class All extends Component {
         return this._getTabLayout(allListView, bookmarkedListView);
     }
 }
+
 

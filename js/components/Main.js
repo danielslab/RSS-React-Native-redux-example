@@ -91,13 +91,7 @@ class Main extends Component {
     };
 
     _renderRightButton = (route, navigator, index, navState) => {
-        if (this.props.isAllSelected) {
-            return (
-                <TouchableOpacity style={styles.rightIcon} onPress={() => this.props.allActions.refreshFeeds()}>
-                    <Icon name={icons.refresh} size={24} color="white"/>
-                </TouchableOpacity>
-            );
-        } else if (!this.props.tagsState.tagsCommitted) {
+        if (!this.props.tagsState.tagsCommitted) {
             return (
                 <TouchableOpacity style={styles.leftIcon}
                                   onPress={() => this._confirmCommit(this.props.tagsActions.commitTags)}>
@@ -142,7 +136,6 @@ class Main extends Component {
         const {allActions, allState} = this.props;
         const {tagsActions, tagsState} = this.props;
         const {channelsActions, channelsState} = this.props;
-        const {tagsMaskManagerActions, tagsMaskManagerState} = this.props;
         if (route && route.title === 'Add Channel') {
             return <ChannelForm
                         navigator={navigator}
@@ -162,8 +155,8 @@ class Main extends Component {
         if (isAllSelected) {
             return <All
                 navigator={navigator}
-                allActions={allActions}
-                allState={allState}/>;
+                {...allActions}
+                {...allState}/>;
         } else if (isManageChannelsSelected) {
             return <ManageChannels
                 navigator={navigator}

@@ -1,5 +1,6 @@
 import {DOMParser} from 'xmldom';
-let sectionId = 0;
+import uuidV1 from 'uuid/v1';
+
 
 let fetch = (url) => (
     new Promise((resolve, reject) => {
@@ -33,9 +34,9 @@ let parseSections = (xml) => (
             if (items.hasOwnProperty(i)) {
                 let enclosure = items[i].getElementsByTagName('enclosure')[0]
                 result.push({
-                    id: i,
+                    id: uuidV1(),
                     title: items[i].getElementsByTagName('title')[0].textContent,
-                    link: items[i].getElementsByTagName('link')[0].textContent,
+                    url: items[i].getElementsByTagName('link')[0].textContent,
                     description: items[i].getElementsByTagName('description')[0].textContent,
                     date: items[i].getElementsByTagName('pubDate')[0].textContent,
                     faviconUrl: enclosure && enclosure.getAttribute('url')
@@ -53,7 +54,7 @@ let parseHeader = (xml) => (
     new Promise((resolve) => {
         let image = xml.getElementsByTagName('image')[0];
         let result = {
-                id: `section-${++sectionId}`,
+                id: uuidV1(),
                 title: xml.getElementsByTagName('title')[0].textContent,
                 link: xml.getElementsByTagName('link')[0].textContent,
                 faviconUrl: image && image.getElementsByTagName('url')[0].textContent,
