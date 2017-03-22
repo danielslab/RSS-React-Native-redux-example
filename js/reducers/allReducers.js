@@ -25,6 +25,7 @@ let initialState = {
 export default function allState(state = initialState, action = {}) {
     switch (action.type) {
         case ON_FEED_PRESS:
+            handlers.setFeedSeen(action.id);
             return {
                 ...state,
                 feedToShow: handlers.getFeedById(action.id),

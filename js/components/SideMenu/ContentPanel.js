@@ -101,7 +101,7 @@ export default class ContentPanel extends Component {
         let backgrondColor = this._getItemBackgroundColor(isSelected);
         let contentColor = this._getItemContentColor(isSelected);
         if (name === 'All') {
-            name = 'All (' +  this.props.unreadCount + '/' + this.props.totalCount + ')';
+            name = 'All (' +  this.props.unseenFeedsCount + '/' + this.props.allFeedsCount + ')';
         }
         return (
             <View style={[styles.itemContainer,

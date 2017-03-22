@@ -4,8 +4,10 @@
 import {
     ON_ALL_SELECTED,
     ON_TAGS_SELECTED,
-    ON_MANAGE_CHANNELS_SELECTED
+    ON_MANAGE_CHANNELS_SELECTED,
+    GET_FEEDS_STAT
 } from '../constants';
+import {getFeedStat} from '../db/handlers';
 
 let initialState = {
     isAllSelected: true,
@@ -33,6 +35,11 @@ export default function sideMenuState(state = initialState, action)
                 isManageChannelsSelected: true,
                 isAllSelected: false,
                 isTagsSelected: false,
+            };
+        case GET_FEEDS_STAT:
+            return {
+                ...state,
+                ...getFeedStat(),
             };
         default:
             return state;

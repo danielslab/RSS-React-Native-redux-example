@@ -47,7 +47,10 @@ class SideMenu extends Component {
                 styles={drawerStyles}
                 tweenHandler={(ratio) => ({ main: { opacity:(2-ratio)/2 }})}>
                 <Main
-                    openDrawer={() => this._drawer.open()}
+                    openDrawer={() => {
+                        this._drawer.open();
+                        this.props.sideMenuActions.getFeedsStat();
+                    }}
                     {...sideMenuState}/>
             </Drawer>
         );

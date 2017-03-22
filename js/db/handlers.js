@@ -174,3 +174,18 @@ export function changeFeedBookmark(id) {
         feed.is_bookmarked = !feed.is_bookmarked;
     });
 }
+
+export function setFeedSeen(id) {
+    realm.write(() => {
+        let feed = getFeedById(id);
+        feed.wasSeen = true;
+    });
+}
+
+export function getFeedStat() {
+   let allFeeds =  realm.objects('Feed');
+   return {
+       allFeedsCount: allFeeds.length,
+       unseenFeedsCount: allFeeds.filtered('wasSeen = $0', false).length,
+   }
+}

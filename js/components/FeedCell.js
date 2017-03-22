@@ -22,7 +22,6 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: '#E0E0E0',
         padding: 7,
-        margin: 5,
     },
     textIconContainer: {
         flex: 0.9,
@@ -66,6 +65,7 @@ export default class FeedCell extends Component {
         title: PropTypes.string,
         description: PropTypes.string,
         is_bookmarked: PropTypes.bool,
+        wasSeen: PropTypes.bool,
         onTapStar: PropTypes.func,
         onPress: PropTypes.func,
         faviconUrl: PropTypes.string,
@@ -76,7 +76,13 @@ export default class FeedCell extends Component {
         faviconUrl: 'https://cdn2.iconfinder.com/data/icons/basic-office-snippets/170/Basic_Office-7-512.png',
     };
 
-
+    _getBackgroundColor = () => {
+        if (this.props.wasSeen) {
+            return 'white';
+        } else {
+            return '#E3F2FD';
+        }
+    };
 
     _onPress = () => {
         const {onPress, rowID, len, id, navigator} = this.props;
@@ -86,8 +92,10 @@ export default class FeedCell extends Component {
 
     render() {
         const {title, description, onTapStar, faviconUrl, id} = this.props;
+        console.log(this._getBackgroundColor(), this.props.wasSeen);
+        let color = this._getBackgroundColor();
         return (
-            <View style={styles.container}>
+            <View style={[styles.container, {backgroundColor: color}]}>
                 <TouchableOpacity style={styles.textIconContainer} onPress={this._onPress}>
                     <Image source={{uri: faviconUrl || defaultFavicon}} style={styles.icon} />
                     <View style={styles.textContainer}>

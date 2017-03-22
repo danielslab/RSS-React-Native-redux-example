@@ -10,7 +10,8 @@ const FeedSchema = {
         title: 'string',
         description: 'string',
         faviconUrl: {type: 'string', optional: true},
-        url: 'string'
+        url: 'string',
+        wasSeen: {type: 'bool', default: false}
     }
 };
 
@@ -47,5 +48,5 @@ const TagSchema = {
     }
 };
 
-let realm = new Realm({schema: [FeedSchema, ChannelSchema, TagMaskSchema, TagSchema], schemaVersion: 7});
+let realm = new Realm({schema: [FeedSchema, ChannelSchema, TagMaskSchema, TagSchema], schemaVersion: 8});
 export default realm;
