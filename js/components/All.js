@@ -3,6 +3,9 @@
  */
 import React, {Component, PropTypes} from 'react';
 import ScrollableTabView, {DefaultTabBar, ScrollableTabBar} from 'react-native-scrollable-tab-view';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+
 import {
     ListView,
     SegmentedControlIOS,
@@ -29,27 +32,28 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     segmentedControl: {
+        backgroundColor: 'white',
         marginTop: 10,
         marginLeft: 20,
         marginRight: 20,
     }
 });
-
+const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 export default class All extends Component {
     static propTypes = {
         allFeeds: PropTypes.array,
-        bookmarkedFeed: PropTypes.array,
-        tag: PropTypes.string,
+        bookmarkedFeeds: PropTypes.array,
+        tagToSort: PropTypes.string,
         channelId: PropTypes.string,
         isRefreshing: PropTypes.bool,
         refresh: PropTypes.func,
         onTapStar: PropTypes.func,
-        onFeedPress: PropTypes.func,
+        onPress: PropTypes.func,
+        navigator: PropTypes.object,
     };
 
     constructor(props) {
         super(props);
-        const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.state = {
             dataSourceAllFeeds: ds.cloneWithRows(this.props.allFeeds),
             dataSourceBookmarkedFeeds: ds.cloneWithRows(this.props.bookmarkedFeeds),
@@ -57,32 +61,43 @@ export default class All extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        for (let i = 0; i < nextProps.bookmarkedFeeds.length; ++i) {
+            console.log(nextProps.bookmarkedFeeds[i].title);
+        }
         this.setState({
-            dataSourceAllFeeds: this.state.dataSourceAllFeeds.cloneWithRows(nextProps.allFeeds),
-            dataSourceBookmarkedFeeds: this.state.dataSourceBookmarkedFeeds.cloneWithRows(nextProps.bookmarkedFeeds),
+            dataSourceAllFeeds: ds.cloneWithRows(nextProps.allFeeds),
+        });
+        this.setState({
+            dataSourceBookmarkedFeeds: ds.cloneWithRows(nextProps.bookmarkedFeeds),
         });
     }
 
     _isData = () => {
         return !(this.props.allFeeds.length === 0);
-    }
+    };
+
     componentDidMount() {
         const {refresh} = this.props;
-        if (!this._isData()) {
-            refresh(this.props.tag, this.props.channelId);
+        if (!this._isData() || this.props.tagToSort) {
+            refresh(this.props.tagToSort, this.props.channelId);
         }
     }
 
 
-    _getListView = dataSource => {
+    _getListView = (dataSource, len) => {
+        key = 0;
         return (
             dataSource ?
                 (<ListView style={{flex: 1}}
                            dataSource={dataSource}
-                           renderRow={(rowData) => <FeedCell
+                           renderRow={(rowData, sectionID, rowID) =>{
+                                            return  (<FeedCell
                                                         {...rowData}
-                                                        onPress={this.props.onFeedPress}
-                                                        onTapStar={this.props.onTapStar}/>}
+                                                        len={len}
+                                                        rowID={parseInt(rowID) + 1}
+                                                        navigator={this.props.navigator}
+                                                        onPress={this.props.onPress}
+                                                        onTapStar={this.props.onTapStar}/>)}}
                       refreshControl={
                           <RefreshControl
                                 refreshing={this.props.isRefreshing}
@@ -100,7 +115,7 @@ export default class All extends Component {
         const {selectedFeedTabIndex} = this.props;
         if (Platform.OS === 'ios') {
             return (
-                <View style={{flex: 1}}>
+                <View style={{flex: 1, backgroundColor: 'white'}}>
                     <View style={styles.segmentedControl}>
                         <SegmentedControlIOS
                             tintColor={MAIN_COLOR}
@@ -136,10 +151,9 @@ export default class All extends Component {
     };
 
     render() {
-        let allListView = this._getListView(this.state.dataSourceAllFeeds);
-        let bookmarkedListView = this._getListView(this.state.dataSourceBookmarkedFeeds);
+        let allListView = this._getListView(this.state.dataSourceAllFeeds, this.props.allFeeds.length);
+        let bookmarkedListView = this._getListView(this.state.dataSourceBookmarkedFeeds,
+                                                    this.props.bookmarkedFeeds.length);
         return this._getTabLayout(allListView, bookmarkedListView);
     }
 }
-
-

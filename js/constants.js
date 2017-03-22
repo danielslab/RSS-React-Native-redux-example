@@ -17,7 +17,7 @@ const getIcons = () => {
             star: 'ios-star',
             trash: 'ios-trash',
             close: 'ios-close-circle',
-            arrowBack: 'ios-arrow-round-back',
+            arrowBack: 'ios-arrow-back',
         }
     } else {
         return {
@@ -29,7 +29,7 @@ const getIcons = () => {
             star: 'md-star',
             trash: 'md-trash',
             close: 'md-close-circle',
-            arrowBack: 'md-arrow-round-back'
+            arrowBack: 'md-arrow-back'
         }
     }
 };
@@ -78,3 +78,4 @@ export const GET_TAGS_MASK = "GET_TAGS_MASK";
 export const REFRESH_FEEDS_LOADING = "REFRESH_FEEDS_LOADING";
 export const REFRESH_FEEDS_RECEIVED = "REFRESH_FEEDS_RECEIVED";
 export const REFRESH_FEEDS_ERROR = "REFRESH_FEEDS_ERROR";
+export const RESET_ALL_STATE = "RESET_ALL_STATE";

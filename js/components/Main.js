@@ -18,6 +18,7 @@ import {
 } from 'react-native';
 
 import {MAIN_COLOR, icons} from '../constants';
+import {getStarColor} from '../utils';
 
 import * as allActions from '../actions/allActions';
 import * as tagsActions from '../actions/tagsActions';
@@ -28,6 +29,7 @@ import ManageChannels from './ManageChannels';
 import Tags from './Tags';
 import ChannelForm from './ChannelForm';
 import TagsMaskManager from './TagsMaskManager';
+import FeedView from './FeedView';
 
 const topPanelMarginTop = () => {
     if (Platform.OS === 'ios') {
@@ -77,6 +79,9 @@ class Main extends Component {
                 <TouchableOpacity style={styles.leftIcon} onPress={() =>
                     {
                         navigator.pop();
+                        if (route && route.type === 'allOfATag') {
+                            this.props.allActions.resetAllState();
+                        }
                     }
                 }>
                     <Icon name={icons.arrowBack} size={24} color="white"/>
@@ -91,15 +96,21 @@ class Main extends Component {
     };
 
     _renderRightButton = (route, navigator, index, navState) => {
-        if (!this.props.tagsState.tagsCommitted) {
+          if (!this.props.tagsState.tagsCommitted){
+            return <TouchableOpacity style={styles.rightIcon}
+                                     onPress={() => this._confirmCommit(this.props.tagsActions.commitTags)}>
+                <MaterialIcon name={"save"} size={24} color="white"/>
+            </TouchableOpacity>
+        }
+        if (route && route.type === 'feedView') {
             return (
-                <TouchableOpacity style={styles.leftIcon}
-                                  onPress={() => this._confirmCommit(this.props.tagsActions.commitTags)}>
-                    <MaterialIcon name={"save"} size={24} color="white"/>
+                <TouchableOpacity style={styles.rightIcon}
+                                  onPress={() => this.props.allActions.onTapStar(this.props.allState.feedToShow.id)}>
+                    <Icon name={icons.star} size={24} color={getStarColor(this.props.allState.feedToShow.is_bookmarked, true)}/>
                 </TouchableOpacity>
             );
         }
-         else {
+        else {
             return <View/>;
         }
     };
@@ -120,8 +131,7 @@ class Main extends Component {
         let title = '';
         if (route && route.title) {
             title = route.title;
-        } else
-        if (isAllSelected) {
+        } else if (isAllSelected) {
             title = 'All';
         } else if (isTagsSelected) {
             title = 'Tags';
@@ -136,21 +146,33 @@ class Main extends Component {
         const {allActions, allState} = this.props;
         const {tagsActions, tagsState} = this.props;
         const {channelsActions, channelsState} = this.props;
-        if (route && route.title === 'Add Channel') {
-            return <ChannelForm
+        if (route && route.type === 'allOfATag') {
+            for(book of  allState.bookmarkedFeeds) {
+                console.log("BOOKMARK", book.title);
+            }
+            return <All
                         navigator={navigator}
-                        type="add"
-                        {...channelsActions}
-                        {...channelsState}/>;
+                        tagToSort={tagsState.tag}
+                        {...allActions}
+                        {...allState}/>;
+        } else
+        if (route && route.type === 'feedView') {
+            return <FeedView {...allState.feedToShow}/>
+        } else if (route && route.title === 'Add Channel') {
+            return <ChannelForm
+                navigator={navigator}
+                type="add"
+                {...channelsActions}
+                {...channelsState}/>;
         } else if (route && route.title === 'Edit Channel') {
             return <ChannelForm
-                        navigator={navigator}
-                        type="edit"
-                        {...channelsActions}
-                        {...channelsState}/>;
+                navigator={navigator}
+                type="edit"
+                {...channelsActions}
+                {...channelsState}/>;
         } else if (route && route.title === 'Edit Tags') {
             return <TagsMaskManager
-                        channelId={channelsState.id}/>
+                channelId={channelsState.id}/>
         }
         if (isAllSelected) {
             return <All
@@ -165,7 +187,6 @@ class Main extends Component {
         } else if (isTagsSelected) {
             return <Tags
                 navigator={navigator}
-                showCheckboxes={false}
                 {...tagsActions}
                 {...tagsState}/>;
         }

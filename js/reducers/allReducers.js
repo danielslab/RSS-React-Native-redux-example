@@ -7,15 +7,14 @@ import {
     SELECT_FEED_TAB,
     REFRESH_FEEDS_LOADING,
     REFRESH_FEEDS_RECEIVED,
-    REFRESH_FEEDS_ERROR
+    REFRESH_FEEDS_ERROR,
+    RESET_ALL_STATE
 } from '../constants';
 import * as handlers from '../db/handlers';
 
 let initialState = {
     allFeeds: [],
     bookmarkedFeeds: [],
-    tag: null,
-    channelId: null,
     feedToShow: null,
     selectedFeedTabIndex: 0,
     isRefreshing: false,
@@ -32,10 +31,20 @@ export default function allState(state = initialState, action = {}) {
             };
         case ON_TAP_STAR:
             handlers.changeFeedBookmark(action.id);
+            let newFeedToShow;
+            if (state.feedToShow) {
+                newFeedToShow = handlers.getFeedById(action.id);
+            }
+            let allFeeds = handlers.getFeeds(state.tag, state.channelId);
+            let bookmarkedFeeds = handlers.getFeeds(state.tag, state.channelId, true);
+            for(book of  bookmarkedFeeds) {
+                console.log("TAP STAR", book.title);
+            }
             return {
                 ...state,
-                allFeeds: handlers.getFeeds(action.tag, action.channelId),
-                bookmarkedFeeds: handlers.getFeeds(action.tag, action.channelId, true),
+                allFeeds: handlers.getFeeds(state.tag, state.channelId),
+                bookmarkedFeeds: handlers.getFeeds(state.tag, state.channelId, true),
+                feedToShow: newFeedToShow,
             };
         case REFRESH_FEEDS_LOADING:
             return {
@@ -46,6 +55,8 @@ export default function allState(state = initialState, action = {}) {
             return {
                 ...state,
                 isRefreshing: false,
+                tag: action.tag,
+                channelId: action.channelId,
                 allFeeds: handlers.getFeeds(action.tag, action.channelId),
                 bookmarkedFeeds: handlers.getFeeds(action.tag, action.channelId, true),
             };
@@ -59,6 +70,15 @@ export default function allState(state = initialState, action = {}) {
             return {
                 ...state,
                 selectedFeedTabIndex: action.index,
+            };
+        case RESET_ALL_STATE:
+            return {
+                allFeeds: [],
+                bookmarkedFeeds: [],
+                feedToShow: null,
+                selectedFeedTabIndex: 0,
+                isRefreshing: false,
+                error: null,
             };
         default:
             return state;

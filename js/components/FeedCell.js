@@ -11,8 +11,8 @@ import {
     TouchableOpacity,
     Image
 } from 'react-native';
-import {enhanceStr} from '../utils';
-import {icons, STAR_COLOR, MAIN_COLOR} from '../constants';
+import {enhanceStr, getStarColor} from '../utils';
+import {icons, MAIN_COLOR} from '../constants';
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -61,32 +61,34 @@ const defaultFavicon = 'https://cdn2.iconfinder.com/data/icons/basic-office-snip
 export default class FeedCell extends Component {
     static propTypes = {
         id: PropTypes.string,
+        len: PropTypes.number,
+        rowID: PropTypes.number,
         title: PropTypes.string,
         description: PropTypes.string,
         is_bookmarked: PropTypes.bool,
         onTapStar: PropTypes.func,
         onPress: PropTypes.func,
         faviconUrl: PropTypes.string,
+        navigator: PropTypes.object,
     };
 
     static defaultProps = {
         faviconUrl: 'https://cdn2.iconfinder.com/data/icons/basic-office-snippets/170/Basic_Office-7-512.png',
     };
 
-    _getStarColor = () => {
-        if (this.props.is_bookmarked) {
-            return STAR_COLOR;
-        } else {
-            return '#9E9E9E';
-        }
+
+
+    _onPress = () => {
+        const {onPress, rowID, len, id, navigator} = this.props;
+        onPress(id);
+        navigator.push({type: 'feedView', title: rowID + "/" + len});
     };
 
     render() {
-        const {title, description, onTapStar, onFeedPress, faviconUrl, id} = this.props;
-        console.log(title, description);
+        const {title, description, onTapStar, faviconUrl, id} = this.props;
         return (
             <View style={styles.container}>
-                <TouchableOpacity style={styles.textIconContainer} onPress={() => onFeedPress(id)}>
+                <TouchableOpacity style={styles.textIconContainer} onPress={this._onPress}>
                     <Image source={{uri: faviconUrl || defaultFavicon}} style={styles.icon} />
                     <View style={styles.textContainer}>
                         <Text  style={styles.title} numberOfLines={1}>{enhanceStr(title)}</Text>
@@ -97,7 +99,7 @@ export default class FeedCell extends Component {
                     <Icon
                         name={icons.star}
                         size={24}
-                        color={this._getStarColor()} />
+                        color={getStarColor(this.props.is_bookmarked)} />
                 </TouchableOpacity>
             </View>
         );

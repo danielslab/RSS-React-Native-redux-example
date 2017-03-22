@@ -49,14 +49,12 @@ class TagsMaskManager extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('Receives Props');
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(nextProps.tagsMask),
         });
     }
 
     componentDidMount() {
-        console.log('Did Mount');
          this.props.getTagsMask(this.props.channelId);
     }
 

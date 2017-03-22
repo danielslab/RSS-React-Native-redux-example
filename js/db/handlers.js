@@ -14,14 +14,12 @@ export function getTags() {
 }
 
 export function commitTags(tags) {
-    console.log("Commit");
     let channels = realm.objects('Channel');
     realm.write(() => {
         for (let i = 0; i < channels.length; ++i) {
             for (let j = 0; j < tags.length; ++j) {
                 let tag = channels[i].tagsMask.filtered('name = "' + tags[j] + '"')[0];
                 if (!tag) {
-                    console.log('GOT A TAG', tags[j]);
                     channels[i].tagsMask.push({name: tags[j], isChecked: false});
                 }
             }
@@ -136,23 +134,34 @@ export function getFeeds(tag, channelID, onlyBookmarked) {
         return getFeedsByChannelId(channelID, onlyBookmarked);
     }
     if (onlyBookmarked) {
-        return realm.objects('Feed').filtered('is_bookmarked = true')
+        return realm.objects('Feed').filtered('is_bookmarked = true').sorted("date",{ascending: false});
     }
-    return realm.objects('Feed');
+    return realm.objects('Feed').sorted("date",{ascending: false});
 }
 
 function getFeedsByTag(tag, onlyBookmarked) {
+    let feeds =  realm.objects('Feed').sorted("date",{ascending: false});;
     if (onlyBookmarked) {
-        return realm.objects('Feed').filtered('ANY channel.tagsMask.name = $0 AND is_bookmarked = true"', tag);
+         feeds = feeds.filtered('is_bookmarked = true');
     }
-    return realm.objects('Feed').filtered('ANY channel.tagsMask.name = $0', tag);
+    let out = [];
+    for (let j = 0; j < feeds.length; ++j) {
+        let tagsMask = feeds[j].channel.tagsMask;
+        for (let i = 0; i < tagsMask.length; ++i) {
+            if (tagsMask[i].name === tag && tagsMask[i].isChecked) {
+                out.push(feeds[j]);
+                break;
+            }
+        }
+    }
+    return out;
 }
 
 function getFeedsByChannelId(id, onlyBookmarked) {
     if (onlyBookmarked) {
-        return realm.objects('Feed').filtered('channel.id = $0 AND is_bookmarked = true', id);
+        return realm.objects('Feed').filtered('channel.id = $0 AND is_bookmarked = true', id).sorted("date",{ascending: false});
     }
-    return realm.objects('Feed').filtered('channel.id = $0', id);
+    return realm.objects('Feed').filtered('channel.id = $0', id).sorted("date",{ascending: false});
 }
 
 export function getFeedById(id) {

@@ -31,7 +31,6 @@ function checkChannel(channel, oldChannel) {
 }
 
 export function editChannel(id, url, name, oldUrl) {
-    console.log('URL', url, oldUrl);
     let check = checkChannel(url, oldUrl);
     if (check !== 'valid') {
         return {
@@ -59,7 +58,6 @@ export function editChannel(id, url, name, oldUrl) {
                     )
                 },
                 reject => {
-                    console.log("REJECT", reject);
                     dispatch(
                         {
                             type: EDIT_CHANNEL,
@@ -69,7 +67,6 @@ export function editChannel(id, url, name, oldUrl) {
                     )
                 }
             ).catch((error) => {
-                console.log("EDIT channel error", error);
                 dispatch({type: EDIT_CHANNEL, isChannelValid: 'invalid', error: "Verify the internet connection"})
             });
     }
@@ -126,7 +123,6 @@ export function addChannel(url, name){
         return parseRSSHeader(url)
             .then(
                 result => {
-                    console.log('Result', result);
                     if (!name) {
                         name = result.title;
                     }
@@ -151,7 +147,6 @@ export function addChannel(url, name){
                     )
                 }
             ).catch((error) => {
-                console.log("ADD channel error", error);
                 dispatch({type: ADD_CHANNEL, isChannelValid: 'invalid', error: "Verify the internet connection"})
             });
     }

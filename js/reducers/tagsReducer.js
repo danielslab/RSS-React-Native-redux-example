@@ -7,6 +7,7 @@ import {
     ADD_TAG,
     DELETE_TAG,
     COMMIT_TAGS,
+    ON_PRESS_TAG,
 } from '../constants';
 
 
@@ -14,6 +15,7 @@ let initialState = {
     tags: [],
     tagsCommitted: true,
     channelId: null,
+    tag: null,
 };
 
 
@@ -70,9 +72,14 @@ export default function tagsState(state = initialState, action) {
             };
         case COMMIT_TAGS:
             commitTags(state.tags);
-            return { // TODO
+            return {
                 ...state,
                 tagsCommitted: true,
+            };
+        case ON_PRESS_TAG:
+            return {
+                ...state,
+                tag: action.tag,
             };
         default:
             return state;

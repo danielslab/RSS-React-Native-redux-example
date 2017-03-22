@@ -53,7 +53,6 @@ export default class AddChannel extends Component {
                 name: '',
             }
         } else if (props.type === 'edit') {
-            console.log('EDIT', props.url, props.name);
             this.state = {
                 url: props.url,
                 name: props.name,
@@ -63,7 +62,6 @@ export default class AddChannel extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("Is Channel valid", nextProps.isChannelValid);
         if (nextProps.isChannelValid === 'valid') {
             this.props.navigator.pop();
             setTimeout(this.props.resetForm, 1000);

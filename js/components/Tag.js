@@ -40,12 +40,17 @@ export default class Tag extends Component {
         tag: PropTypes.string,
         deleteTag: PropTypes.func,
         onPressTag: PropTypes.func,
+        navigator: PropTypes.object,
     };
 
+    _onPress = () => {
+        this.props.onPressTag(this.props.tag);
+        this.props.navigator.push({title: this.props.tag, type: 'allOfATag'});
+    };
     render() {
-        const {tag,  deleteTag, onPressTag} = this.props;
+        const {tag, deleteTag} = this.props;
         return (
-            <TouchableOpacity onPress={this.props.onPressTag}>
+            <TouchableOpacity onPress={() => this._onPress()}>
                 <View style={styles.tag}>
                     <Text style={styles.tagText}>{tag}</Text>
                     <TouchableOpacity onPress={() => deleteTag(tag)}>

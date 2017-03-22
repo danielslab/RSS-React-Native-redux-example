@@ -97,11 +97,10 @@ export default class ChannelCell extends Component {
     };
 
     render() {
-        console.log('FAVICON URL', this.props.faviconUrl);
         const {id, name, url, faviconUrl, onPressChannel, editChannel, getChannelTagsMask} = this.props;
         return (
             <View style={styles.container}>
-                <TouchableOpacity style={styles.textIconContainer} onPress={() => onPressChannel(id)}>
+                <TouchableOpacity style={styles.textIconContainer} onPress={() => getChannelTagsMask(id)}>
                     <Image source={{uri: faviconUrl || defaultFavicon}} style={styles.icon} />
                     <View style={styles.textContainer}>
                         <View style={{flex: 1}}>

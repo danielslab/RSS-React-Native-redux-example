@@ -50,6 +50,7 @@ export default class Tags extends Component {
         addTag: PropTypes.func,
         onPressTag: PropTypes.func,
         commitTags: PropTypes.func,
+        navigator: PropTypes.object,
     };
 
     constructor(props) {
@@ -64,7 +65,7 @@ export default class Tags extends Component {
     }
 
     render() {
-        const {deleteTag, onPressTag,  tags} = this.props;
+        const {deleteTag, onPressTag, tags, navigator} = this.props;
         return (
             <View style={styles.outerContainer}>
                 <ScrollView style={{flex: 1}}>
@@ -76,6 +77,7 @@ export default class Tags extends Component {
                                     tag={tag}
                                     deleteTag={deleteTag}
                                     onPressTag={onPressTag}
+                                    navigator={navigator}
                                 />
                             );
                         })}
