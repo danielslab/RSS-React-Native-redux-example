@@ -147,9 +147,6 @@ class Main extends Component {
         const {tagsActions, tagsState} = this.props;
         const {channelsActions, channelsState} = this.props;
         if (route && route.type === 'allOfATag') {
-            for(book of  allState.bookmarkedFeeds) {
-                console.log("BOOKMARK", book.title);
-            }
             return <All
                         navigator={navigator}
                         tagToSort={tagsState.tag}

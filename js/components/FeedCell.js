@@ -92,7 +92,6 @@ export default class FeedCell extends Component {
 
     render() {
         const {title, description, onTapStar, faviconUrl, id} = this.props;
-        console.log(this._getBackgroundColor(), this.props.wasSeen);
         let color = this._getBackgroundColor();
         return (
             <View style={[styles.container, {backgroundColor: color}]}>

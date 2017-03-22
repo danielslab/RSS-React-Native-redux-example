@@ -74,7 +74,6 @@ export default class FeedView extends Component {
 
     render() {
         const {title, description, faviconUrl, date} = this.props;
-        console.log("Faviocn url", faviconUrl);
         return (
             <ScrollView style={styles.container} contentContainerStyle={styles.content}>
                 <View style={styles.titleDateContainer}>

@@ -38,7 +38,6 @@ const styles = StyleSheet.create({
         marginRight: 20,
     }
 });
-const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 export default class All extends Component {
     static propTypes = {
         allFeeds: PropTypes.array,
@@ -54,16 +53,17 @@ export default class All extends Component {
 
     constructor(props) {
         super(props);
+        this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.state = {
-            dataSourceAllFeeds: ds.cloneWithRows(this.props.allFeeds),
-            dataSourceBookmarkedFeeds: ds.cloneWithRows(this.props.bookmarkedFeeds),
+            dataSourceAllFeeds: this.ds.cloneWithRows(this.props.allFeeds),
+            dataSourceBookmarkedFeeds: this.ds.cloneWithRows(this.props.bookmarkedFeeds),
         };
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({
-            dataSourceAllFeeds: ds.cloneWithRows(nextProps.allFeeds),
-            dataSourceBookmarkedFeeds: ds.cloneWithRows(nextProps.bookmarkedFeeds),
+            dataSourceAllFeeds: this.ds.cloneWithRows(nextProps.allFeeds),
+            dataSourceBookmarkedFeeds: this.ds.cloneWithRows(nextProps.bookmarkedFeeds),
         });
     }
 
@@ -83,7 +83,7 @@ export default class All extends Component {
         key = 0;
         return (
             dataSource ?
-                (<ListView style={{flex: 1}}
+                (<ListView removeClippedSubviews={false} style={{flex: 1}}
                            dataSource={dataSource}
                            renderRow={(rowData, sectionID, rowID) =>{
                                             return  (<FeedCell

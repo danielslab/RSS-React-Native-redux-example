@@ -29,5 +29,7 @@ export function onManageChannelsSelected() {
 export function getFeedsStat() {
     return {
         type: GET_FEEDS_STAT,
+
+
     }
 }
